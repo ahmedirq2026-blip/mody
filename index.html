@@ -7,1020 +7,847 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          "primary": "#00448c",
-          "primary-container": "#005bb7",
-          "on-primary": "#ffffff",
-          "secondary": "#00677f",
-          "secondary-container": "#00ccf9",
-          "on-secondary-container": "#005266",
-          "surface": "#f7f9fb",
-          "surface-bright": "#f7f9fb",
-          "on-surface": "#191c1e",
-          "on-surface-variant": "#424752",
-          "secondary-fixed": "#b7eaff",
-          "on-secondary-fixed": "#001f28",
-          "background": "#f7f9fb",
-          "on-background": "#191c1e",
-        },
-        fontFamily: { "manrope": ["Manrope"] },
-      }
-    }
-  }
+<script>
+tailwind.config={darkMode:"class",theme:{extend:{
+  colors:{"primary":"#00448c","primary-container":"#005bb7","secondary-container":"#00ccf9","background":"#f7f9fb","secondary-fixed":"#b7eaff","on-secondary-fixed":"#001f28"},
+  fontFamily:{sans:["Manrope","sans-serif"]},
+  spacing:{"section-padding":"80px"}
+}}};
 </script>
 <style>
-  * { font-family: 'Manrope', sans-serif; }
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-  .luminous-shadow { box-shadow: 0 20px 40px rgba(0,91,183,0.08); }
-  .hero-gradient { background: linear-gradient(135deg, #f0f6ff 0%, #ffffff 60%, #e8f4ff 100%); }
-
-  /* Modal */
-  #contact-modal { display: none; }
-  #contact-modal.open { display: flex; }
-
-  /* Smooth scroll offset for fixed nav */
-  html { scroll-padding-top: 80px; }
-
-  /* Package card hover */
-  .pkg-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-  .pkg-card:hover { transform: translateY(-4px); box-shadow: 0 24px 48px rgba(0,68,140,0.18); }
-
-  /* Booking form styles */
-  .form-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1.5px solid #c2c6d4;
-    border-radius: 10px;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s;
-    background: #f8faff;
-  }
-  .form-input:focus { border-color: #00448c; background: #fff; }
-
-  /* Booking modal */
-  #booking-modal { display: none; }
-  #booking-modal.open { display: flex; }
-
-  /* Toast */
-  #toast { 
-    position: fixed; bottom: 32px; right: 32px; z-index: 9999;
-    background: #00448c; color: white; padding: 14px 24px;
-    border-radius: 12px; font-weight: 600; font-size: 14px;
-    transform: translateY(80px); opacity: 0;
-    transition: all 0.35s cubic-bezier(.16,1,.3,1);
-    box-shadow: 0 8px 32px rgba(0,68,140,0.25);
-  }
-  #toast.show { transform: translateY(0); opacity: 1; }
-
-  .hours-badge { 
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 4px 12px; border-radius: 999px;
-    font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
-  }
-  .open-badge { background: #d1fae5; color: #065f46; }
-  .closed-badge { background: #fee2e2; color: #991b1b; }
+*{font-family:'Manrope',sans-serif}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.ls{box-shadow:0 20px 40px rgba(0,91,183,.07)}
+.ch{transition:transform .2s,box-shadow .2s}
+.ch:hover{transform:translateY(-4px);box-shadow:0 28px 56px rgba(0,0,0,.18)}
+.ap{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);border-radius:10px;padding:8px 12px;font-size:12.5px;color:rgba(255,255,255,.93);display:flex;align-items:flex-start;gap:7px;line-height:1.4}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:16px;background:rgba(0,20,60,.55);backdrop-filter:blur(6px)}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:24px;width:100%;max-width:540px;max-height:92vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,40,120,.22)}
+.modal-box::-webkit-scrollbar{width:5px}
+.modal-box::-webkit-scrollbar-thumb{background:#c7d8f5;border-radius:4px}
+.fi{width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;box-sizing:border-box}
+.fi:focus{border-color:#00448c;box-shadow:0 0 0 3px rgba(0,68,140,.1)}
+/* slot buttons */
+.sb{padding:10px 4px;font-size:13px;font-weight:600;border-radius:10px;border:1.5px solid #e2e8f0;color:#475569;transition:all .15s;cursor:pointer;background:#fff;width:100%;line-height:1.2}
+.sb:hover:not(:disabled){border-color:#00448c;color:#00448c;background:#f0f5ff}
+.sb.sel{border-color:#00448c;background:#00448c;color:#fff;font-weight:700}
+.sb.bkd{background:#f8fafc;border-color:#f1f5f9;color:#cbd5e1;cursor:not-allowed;font-size:11px;position:relative}
+/* toast */
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1e293b;color:#fff;padding:13px 24px;border-radius:99px;font-size:14px;font-weight:600;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:10000;white-space:nowrap;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{background:#dc2626}
+.sc{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:all .25s;flex-shrink:0}
+.sl{flex:1;height:2px;transition:background .25s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;animation:spin 1s linear infinite}
 </style>
 </head>
-<body class="bg-background text-on-background selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<body class="bg-[#f7f9fb] text-[#191c1e]">
 
-<!-- ═══════════════════════════════════════════
-     TOP NAV
-════════════════════════════════════════════ -->
-<nav class="fixed top-0 w-full z-50 bg-white/92 backdrop-blur-md border-b border-blue-50 shadow-[0_4px_24px_rgba(0,91,183,0.07)]">
-  <div class="max-w-[1280px] mx-auto flex justify-between items-center px-6 md:px-8 h-[72px]">
-    <!-- Logo -->
-    <a href="#home" class="flex items-center gap-2.5">
-      <div class="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-md">
-        <span class="material-symbols-outlined text-white text-[20px]">water_drop</span>
-      </div>
-      <span class="text-xl font-extrabold text-[#00448c] tracking-tight">Mody Car Wash</span>
-    </a>
-
-    <!-- Desktop Nav Links -->
-    <div class="hidden md:flex items-center gap-6 text-[14px] font-semibold">
-      <a href="#location" class="text-slate-500 hover:text-[#00448c] transition-colors flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-[16px]">location_on</span> Location
-      </a>
-      <a href="#services" class="text-slate-500 hover:text-[#00448c] transition-colors flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-[16px]">local_car_wash</span> Services
-      </a>
-      <button onclick="openContact()" class="text-slate-500 hover:text-[#00448c] transition-colors flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-[16px]">mail</span> Contact Us
-      </button>
+<!-- NAV -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-blue-50 shadow-[0_4px_30px_rgba(0,91,183,.06)]">
+  <div class="max-w-[1280px] mx-auto flex justify-between items-center px-6 md:px-8 h-20">
+    <div class="text-2xl font-extrabold text-blue-800 tracking-tighter">Mody Car Wash</div>
+    <div class="hidden md:flex items-center gap-8 text-sm font-semibold">
+      <a class="text-slate-500 hover:text-blue-700 transition-colors" href="#home">Home</a>
+      <a class="text-slate-500 hover:text-blue-700 transition-colors" href="#services">Services</a>
+      <a class="text-slate-500 hover:text-blue-700 transition-colors" href="#philosophy">About</a>
+      <a class="text-slate-500 hover:text-blue-700 transition-colors" href="#locations">Locations</a>
+      <button onclick="openContact()" class="text-slate-500 hover:text-blue-700 transition-colors">Contact</button>
     </div>
-
-    <!-- CTA -->
     <div class="flex items-center gap-3">
-      <!-- Mobile menu button -->
-      <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 hover:text-[#00448c]">
-        <span class="material-symbols-outlined">menu</span>
+      <button onclick="openContact()" class="hidden md:flex px-5 py-2 text-blue-700 font-semibold hover:bg-blue-50 rounded-lg transition-all text-sm items-center gap-1.5">
+        <span class="material-symbols-outlined text-[16px]">mail</span>Contact Us
       </button>
-      <a href="#services" class="bg-[#00448c] text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-[#005bb7] hover:scale-[1.03] active:scale-95 transition-all flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-[16px]">local_car_wash</span>
-        Book Wash
-      </a>
+      <button onclick="openBooking()" class="bg-[#005bb7] text-white px-6 py-2.5 rounded-lg font-bold shadow-lg hover:bg-[#00448c] transition-all text-sm">Book Now</button>
     </div>
-  </div>
-
-  <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-blue-50 px-6 py-4 space-y-3">
-    <a href="#location" onclick="closeMobileMenu()" class="flex items-center gap-2 py-2 text-slate-600 font-semibold">
-      <span class="material-symbols-outlined text-[18px] text-[#00448c]">location_on</span> Location
-    </a>
-    <a href="#services" onclick="closeMobileMenu()" class="flex items-center gap-2 py-2 text-slate-600 font-semibold">
-      <span class="material-symbols-outlined text-[18px] text-[#00448c]">local_car_wash</span> Services
-    </a>
-    <button onclick="openContact(); closeMobileMenu();" class="flex items-center gap-2 py-2 text-slate-600 font-semibold w-full">
-      <span class="material-symbols-outlined text-[18px] text-[#00448c]">mail</span> Contact Us
-    </button>
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════
-     HERO
-════════════════════════════════════════════ -->
-<section id="home" class="relative pt-28 pb-20 overflow-hidden hero-gradient">
-  <div class="absolute top-0 right-0 w-2/5 h-full bg-[#00ccf9]/8 -skew-x-12 translate-x-20 pointer-events-none"></div>
-  <div class="max-w-[1280px] mx-auto px-6 md:px-8 relative z-10 flex flex-col md:flex-row items-center gap-12 md:gap-16">
-    <!-- Left copy -->
-    <div class="flex-1 space-y-7">
-      <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#b7eaff] text-[#001f28] text-xs font-bold tracking-widest uppercase">
-        <span class="material-symbols-outlined text-[14px]">verified</span>
-        Premium Hand Wash · Temple Hills, MD
+<main>
+<!-- HERO -->
+<section class="relative pt-32 pb-20 overflow-hidden bg-white" id="home">
+  <div class="absolute top-0 right-0 w-1/2 h-full bg-[#b7eaff]/10 -skew-x-12 translate-x-20 z-0"></div>
+  <div class="max-w-[1280px] mx-auto px-6 md:px-8 relative z-10 flex flex-col md:flex-row items-center gap-16">
+    <div class="flex-1 space-y-8">
+      <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#b7eaff] text-[#001f28] text-xs font-bold tracking-widest uppercase">
+        <span class="material-symbols-outlined text-[16px]">verified</span>Premium Hand Wash Specialists
       </span>
-      <h1 class="text-[40px] md:text-[52px] font-extrabold text-[#00448c] leading-[1.15] tracking-tight max-w-xl">
-        Your Car Deserves<br/>a Spotless Shine. ✨
+      <h1 class="font-extrabold text-[44px] md:text-[52px] leading-[1.15] tracking-tight text-[#00448c] max-w-xl">
+        Mody Car Wash:<br>Because your car<br>is family! 🧼💙
       </h1>
-      <p class="text-[17px] text-slate-500 max-w-md leading-relaxed">
-        Professional hand wash & detailing in Temple Hills. Every vehicle treated with meticulous care — zero harsh machines, zero scratches.
-      </p>
-      <!-- Location pill -->
-      <a href="#location" class="inline-flex items-center gap-2.5 px-4 py-2.5 bg-white rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow text-sm font-semibold text-slate-600 group">
-        <span class="material-symbols-outlined text-[18px] text-[#00448c] group-hover:text-[#005bb7]">location_on</span>
-        4533 Saint Barnabas Rd, Temple Hills, MD 20748
-        <span class="open-badge">Open Today</span>
-      </a>
-      <!-- CTAs -->
-      <div class="flex flex-wrap gap-3 pt-2">
-        <a href="#services" class="bg-[#00448c] text-white px-8 py-3.5 rounded-xl font-bold text-[15px] shadow-lg hover:bg-[#005bb7] hover:scale-[1.03] transition-all flex items-center gap-2">
-          Book Your Wash
-          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-        </a>
-        <a href="#philosophy" class="bg-white text-[#00448c] border border-[#c4d7ff] px-6 py-3.5 rounded-xl font-semibold text-[15px] hover:bg-blue-50 transition-colors">
-          Our Approach
-        </a>
-      </div>
-      <!-- Social proof -->
-      <div class="flex items-center gap-3 pt-1">
-        <div class="flex -space-x-2.5">
-          <img class="w-9 h-9 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg21a1UdcCfW0c97V4xveTOL6VPUz1Shpk9XdZ3anxHvufyNhmcqVwo8xBkHQZmWQBamjjwg4qSOSy7r8SX8AL7v6aYH7rBikb_JbW8N6JCEe4y20ZoQt_Z9pvpaHD8u_gBwqgwOnPMj5bfH_O8BtjQvMXa3G9219QKFjdgNTGtEg_4FzzwLXVhwAvbwfiUOuyYODOHMsgElJpNiqMDRqxOrvTXdHq3_Hc2mM83JiKy7xpj8zqkYmf6FJwA0r0Ga-X5T-D8nQ0nIQ" alt="customer"/>
-          <img class="w-9 h-9 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_fSvPAiLLVwhJ8M4KA0jmZh4o0We1s2oYhLhK9KFMQBhQQZb3A1a-dc9WfPWuAYP64NTkGkNQYlN7SdU0ukOJOJC5PQZV1HXpov5ntZfZRNgGiWvwZ4I5uL-PnUypE4YGmTW7Z9Lsr5LBr0Cesw5NRoCX920caKj0_UKM9g3i8iJq8K3OAy9VlmIiyD8JB096ItF8H6STfL2pAvNWOCIVd49dm-Np0Peo-TWoYnIjLeyWQCK9kPLjiqewuqVkv_5l_R5z9jTxe_k" alt="customer"/>
-          <img class="w-9 h-9 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE66RCskA-oEi1rQ51b7fjrXtl8SHQF3XLs2NfaDIJWdyiAYqB5iRqZcuTLENrsImYchoPHrF3MERJr1cc8Mx_DVcIqJHycIACwwrS7jcvnCgByKQyLlPKUC9kMzD2u4oPI5xRunvuDS3tTzk2Ggh7-Kg1OyC7R5A1nlVCFv-pb5ekAPWgh3Jlo3xshhRsg-mLhF6aGIat2YOmRAOGfQSp2iVhNOMX9xU3PlTCpUuUB9mTTa-g5HmekUyp7ofjx9ZPyG1w__zVwp4" alt="customer"/>
+      <p class="text-[18px] text-[#424752] max-w-lg leading-relaxed">Experience the precision of manual care. We reject the harsh machines of the past, treating every vehicle with the meticulous attention it deserves.</p>
+      <div class="flex flex-wrap gap-4 pt-2">
+        <button onclick="openBooking()" class="bg-[#00448c] text-white px-8 py-4 rounded-xl font-bold text-lg ls hover:scale-105 transition-transform flex items-center gap-2">
+          Book Your Service <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+        <div class="flex items-center gap-4 px-2">
+          <div class="flex -space-x-3">
+            <img class="w-10 h-10 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg21a1UdcCfW0c97V4xveTOL6VPUz1Shpk9XdZ3anxHvufyNhmcqVwo8xBkHQZmWQBamjjwg4qSOSy7r8SX8AL7v6aYH7rBikb_JbW8N6JCEe4y20ZoQt_Z9pvpaHD8u_gBwqgwOnPMj5bfH_O8BtjQvMXa3G9219QKFjdgNTGtEg_4FzzwLXVhwAvbwfiUOuyYODOHMsgElJpNiqMDRqxOrvTXdHq3_Hc2mM83JiKy7xpj8zqkYmf6FJwA0r0Ga-X5T-D8nQ0nIQ" alt=""/>
+            <img class="w-10 h-10 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_fSvPAiLLVwhJ8M4KA0jmZh4o0We1s2oYhLhK9KFMQBhQQZb3A1a-dc9WfPWuAYP64NTkGkNQYlN7SdU0ukOJOJC5PQZV1HXpov5ntZfZRNgGiWvwZ4I5uL-PnUypE4YGmTW7Z9Lsr5LBr0Cesw5NRoCX920caKj0_UKM9g3i8iJq8K3OAy9VlmIiyD8JB096ItF8H6STfL2pAvNWOCIVd49dm-Np0Peo-TWoYnIjLeyWQCK9kPLjiqewuqVkv_5l_R5z9jTxe_k" alt=""/>
+            <img class="w-10 h-10 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE66RCskA-oEi1rQ51b7fjrXtl8SHQF3XLs2NfaDIJWdyiAYqB5iRqZcuTLENrsImYchoPHrF3MERJr1cc8Mx_DVcIqJHycIACwwrS7jcvnCgByKQyLlPKUC9kMzD2u4oPI5xRunvuDS3tTzk2Ggh7-Kg1OyC7R5A1nlVCFv-pb5ekAPWgh3Jlo3xshhRsg-mLhF6aGIat2YOmRAOGfQSp2iVhNOMX9xU3PlTCpUuUB9mTTa-g5HmekUyp7ofjx9ZPyG1w__zVwp4" alt=""/>
+          </div>
+          <p class="text-sm font-semibold text-slate-600"><span class="text-blue-700 font-bold">500+</span> Weekly Shines</p>
         </div>
-        <p class="text-sm font-semibold text-slate-500"><span class="text-[#00448c] font-bold">500+</span> Happy customers weekly</p>
       </div>
     </div>
-
-    <!-- Right image -->
-    <div class="flex-1 relative max-w-md w-full">
-      <div class="relative rounded-[28px] overflow-hidden shadow-2xl">
-        <img class="w-full aspect-[4/5] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZYkWV5iYdjkis36hB3-o5Ov9mBFUhsqZg5RVfuPtDH6HM1sIM71Ymy9a1Kub_MwHOoyEcvqoAAHYC94vDdg7R9OXPAhZGh1i6vJoKv6Zd6ffvudTumFxDf1JV_3_6ibf-dRjl9QP-0ZHb3xmTlMcz7VYvyTB7U9IFAySdig3Keodej-x1mVb1pdN3i829kSX7o2PFC1rmFsK9HeuPaJd6lW8a-0CYietZWSLFq7t-6srh6O1KJEdkb3HHV5O-ehq_Z18qvP-FjVc" alt="professional hand washing a car"/>
+    <div class="flex-1 relative">
+      <div class="relative rounded-[2rem] overflow-hidden shadow-2xl z-20">
+        <img class="w-full aspect-[4/5] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZYkWV5iYdjkis36hB3-o5Ov9mBFUhsqZg5RVfuPtDH6HM1sIM71Ymy9a1Kub_MwHOoyEcvqoAAHYC94vDdg7R9OXPAhZGh1i6vJoKv6Zd6ffvudTumFxDf1JV_3_6ibf-dRjl9QP-0ZHb3xmTlMcz7VYvyTB7U9IFAySdig3Keodej-x1mVb1pdN3i829kSX7o2PFC1rmFsK9HeuPaJd6lW8a-0CYietZWSLFq7t-6srh6O1KJEdkb3HHV5O-ehq_Z18qvP-FjVc" alt="hand wash"/>
         <div class="absolute inset-0 bg-gradient-to-t from-[#00448c]/40 to-transparent"></div>
       </div>
-      <!-- Floating badge -->
-      <div class="absolute -bottom-5 -left-5 bg-white p-5 rounded-2xl shadow-xl flex items-center gap-3 border border-blue-50">
-        <div class="w-11 h-11 bg-[#00ccf9]/20 rounded-full flex items-center justify-center text-[#005bb7]">
-          <span class="material-symbols-outlined">water_drop</span>
-        </div>
-        <div>
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Water Quality</p>
-          <p class="text-base font-bold text-[#00448c]">Ultra-Filtered</p>
-        </div>
+      <div class="absolute -bottom-6 -left-6 bg-white p-5 rounded-2xl shadow-xl z-30 flex items-center gap-4">
+        <div class="w-12 h-12 bg-[#00ccf9] rounded-full flex items-center justify-center text-white"><span class="material-symbols-outlined">waves</span></div>
+        <div><p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Water Quality</p><p class="text-base font-bold text-[#00448c]">Ultra-Filtered</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     PHILOSOPHY
-════════════════════════════════════════════ -->
-<section id="philosophy" class="py-20 bg-[#f7f9fb]">
+<!-- PHILOSOPHY -->
+<section class="py-section-padding bg-[#f7f9fb]" id="philosophy">
   <div class="max-w-[1280px] mx-auto px-6 md:px-8 text-center">
-    <div class="max-w-3xl mx-auto space-y-5 mb-14">
-      <h2 class="text-[30px] md:text-[34px] font-bold text-[#00448c] tracking-tight">The Human Touch Philosophy</h2>
-      <div class="w-20 h-1.5 bg-[#00ccf9] mx-auto rounded-full"></div>
-      <p class="text-[17px] text-slate-500 leading-relaxed">
-        Machines are efficient, but they lack eyes. They can't see the fine grit on your rims or the delicate texture of your leather. We believe in an <strong class="text-[#00448c]">anti-machine approach</strong>: if it doesn't involve a careful hand and a professional eye, it's not a Mody Wash.
-      </p>
+    <div class="max-w-3xl mx-auto space-y-5">
+      <h2 class="font-bold text-[32px] text-[#00448c]">The Human Touch Philosophy</h2>
+      <div class="w-24 h-1.5 bg-[#00ccf9] mx-auto rounded-full"></div>
+      <p class="text-[18px] text-[#424752] leading-relaxed">Machines are efficient, but they lack eyes. They can't see the fine grit on your rims or the delicate texture of your leather. We believe in an <strong class="text-[#00448c]">anti-machine approach</strong>: if it doesn't involve a careful hand and a professional eye, it's not a Mody Wash.</p>
     </div>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="bg-white p-8 rounded-2xl border border-blue-50 luminous-shadow text-left space-y-3">
-        <span class="material-symbols-outlined text-4xl text-[#00ccf9]">pan_tool</span>
-        <h3 class="text-xl font-bold text-[#00448c]">Zero Scratches</h3>
-        <p class="text-slate-500 text-[15px]">Soft-touch microfiber and grit-guard buckets ensure your clear coat remains flawless.</p>
-      </div>
-      <div class="bg-white p-8 rounded-2xl border border-blue-50 luminous-shadow text-left space-y-3">
-        <span class="material-symbols-outlined text-4xl text-[#00ccf9]">eco</span>
-        <h3 class="text-xl font-bold text-[#00448c]">Eco-Friendly</h3>
-        <p class="text-slate-500 text-[15px]">We use biodegradable citrus-based cleaners that are tough on grime but gentle on the planet.</p>
-      </div>
-      <div class="bg-white p-8 rounded-2xl border border-blue-50 luminous-shadow text-left space-y-3">
-        <span class="material-symbols-outlined text-4xl text-[#00ccf9]">biotech</span>
-        <h3 class="text-xl font-bold text-[#00448c]">Hydro-Care</h3>
-        <p class="text-slate-500 text-[15px]">Advanced ceramic-infused rinses provide a hydrophobic layer that repels water for weeks.</p>
-      </div>
+    <div class="grid md:grid-cols-3 gap-8 mt-16">
+      <div class="bg-white p-10 rounded-3xl border border-blue-50 ls text-left space-y-4"><span class="material-symbols-outlined text-4xl text-[#00ccf9]">pan_tool</span><h3 class="font-bold text-[22px] text-[#00448c]">Zero Scratches</h3><p class="text-slate-500">Soft-touch microfiber and grit-guard buckets ensure your clear coat remains absolutely flawless.</p></div>
+      <div class="bg-white p-10 rounded-3xl border border-blue-50 ls text-left space-y-4"><span class="material-symbols-outlined text-4xl text-[#00ccf9]">eco</span><h3 class="font-bold text-[22px] text-[#00448c]">Eco-Friendly</h3><p class="text-slate-500">Paint-safe, biodegradable cleaners that are tough on grime but gentle on the planet.</p></div>
+      <div class="bg-white p-10 rounded-3xl border border-blue-50 ls text-left space-y-4"><span class="material-symbols-outlined text-4xl text-[#00ccf9]">water_drop</span><h3 class="font-bold text-[22px] text-[#00448c]">Hydro-Care</h3><p class="text-slate-500">Hydrophobic glass treatments repel water and keep your windows crystal clear for weeks.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     SERVICES & PRICING
-════════════════════════════════════════════ -->
-<section id="services" class="py-20 bg-white">
+<!-- SERVICES -->
+<section class="py-section-padding bg-white" id="services">
   <div class="max-w-[1280px] mx-auto px-6 md:px-8">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
       <div class="space-y-3">
-        <span class="inline-block px-3 py-1 bg-[#b7eaff] text-[#001f28] text-xs font-bold rounded-full uppercase tracking-widest">Choose Your Package</span>
-        <h2 class="text-[28px] md:text-[32px] font-bold text-[#00448c] tracking-tight">Meticulous Service Tiers</h2>
-        <p class="text-slate-500 max-w-md text-[15px]">All services include our signature hand-dry and tire dressing.</p>
+        <h2 class="font-bold text-[32px] text-[#00448c]">Meticulous Service Tiers</h2>
+        <p class="text-slate-500 max-w-lg">Choose the level of care your vehicle deserves. All services include our signature hand-dry finish and tire dressing.</p>
       </div>
-      <img class="hidden lg:block w-44 h-28 object-cover rounded-2xl shadow-md border-4 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI9piIQmekFG19suvvQ55J9-tr8X4TFxXrJZJ_mxXJtvtXwwjTSYogmYQyqAztRjoDIgbUEKmxIpvftHF3PtFUe8o-5BFm-xMa_CHTm66o4Rd_eowK1s4xwSiYFg21D0-i4C72ISGWpMKGXEOs48Z2QGF1iVLO5vJvhiu9SwReTWDRhOcPB8Nh5zU2a3R002XATLUt4xOvHli2ZhQOBBixb5klpMSQBsYtAzvLRhXydlckMlep-GrUtW_tgK2D4lquyvzQhaWLEzg" alt="water droplets on polished car"/>
+      <div class="hidden lg:block"><img class="w-44 h-28 object-cover rounded-2xl shadow-lg border-4 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI9piIQmekFG19suvvQ55J9-tr8X4TFxXrJZJ_mxXJtvtXwwjTSYogmYQyqAztRjoDIgbUEKmxIpvftHF3PtFUe8o-5BFm-xMa_CHTm66o4Rd_eowK1s4xwSiYFg21D0-i4C72ISGWpMKGXEOs48Z2QGF1iVLO5vJvhiu9SwReTWDRhOcPB8Nh5zU2a3R002XATLUt4xOvHli2ZhQOBBixb5klpMSQBsYtAzvLRhXydlckMlep-GrUtW_tgK2D4lquyvzQhaWLEzg" alt=""/></div>
+    </div>
+    <div class="mb-10 bg-blue-50 border border-blue-100 rounded-2xl px-6 py-4 flex items-center gap-3 text-sm text-blue-700 font-medium">
+      <span class="material-symbols-outlined text-lg flex-shrink-0">info</span>
+      <span><strong>No payment required at booking</strong> — Pay on arrival. Each appointment is 1 hour. Please arrive 15 minutes early.</span>
     </div>
 
-    <!-- Package Grid — logically ordered: Exterior → Interior → Combo → Tint Removal → Super Mody -->
-    <div class="grid md:grid-cols-12 gap-5">
-
-      <!-- 1. Mody Exterior -->
-      <div class="md:col-span-4 pkg-card bg-gradient-to-br from-[#0083B0] to-[#00B4D8] p-7 rounded-2xl flex flex-col justify-between">
+    <!-- Row 1 -->
+    <div class="grid md:grid-cols-3 gap-6 mb-6">
+      <!-- Exterior -->
+      <div class="bg-[#00AEEF] rounded-3xl p-8 flex flex-col justify-between ch">
         <div>
-          <span class="material-symbols-outlined text-4xl text-white/80 mb-4 block">water_drop</span>
-          <div class="flex justify-between items-start mb-5">
-            <h3 class="text-[22px] font-bold text-white">Mody Exterior</h3>
-            <span class="text-2xl font-extrabold text-white">$29.99</span>
-          </div>
-          <ul class="space-y-2.5 text-white/90 text-[15px]">
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">opacity</span> Ph-Neutral Hand Wash</li>
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">tire_repair</span> Rim & Wheel Detailing</li>
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">flare</span> Tire Shine</li>
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">dry</span> Hand Dry Finish</li>
+          <p class="text-white/50 font-bold text-xs tracking-widest mb-3">01</p>
+          <span class="material-symbols-outlined text-4xl text-white mb-4 block">water_drop</span>
+          <div class="flex justify-between items-start mb-5"><h3 class="font-bold text-[22px] text-white">Mody Exterior</h3><span class="text-2xl font-extrabold text-white">$29.99</span></div>
+          <ul class="space-y-2.5 text-white/90 text-sm">
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Use of safe cleaners on paint that enhance shine</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>High-pressure water wash to ensure dirt removal</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Hand drying to prevent scratches</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Glass cleaning and polishing</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Cleaning tire rims from inside and outside</li>
           </ul>
         </div>
-        <button onclick="openBooking('Mody Exterior', '$29.99')" class="mt-7 py-3 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#0083B0] transition-all text-[15px]">
-          Book Now
-        </button>
+        <button onclick="openBooking('Mody Exterior','$29.99')" class="mt-8 py-3 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#00AEEF] transition-all">Book Now</button>
       </div>
-
-      <!-- 2. Mody Interior -->
-      <div class="md:col-span-4 pkg-card bg-gradient-to-br from-[#007A6E] to-[#00A896] p-7 rounded-2xl flex flex-col justify-between">
+      <!-- Interior -->
+      <div class="bg-[#008080] rounded-3xl p-8 flex flex-col justify-between ch">
         <div>
-          <span class="material-symbols-outlined text-4xl text-white/80 mb-4 block">directions_car</span>
-          <div class="flex justify-between items-start mb-5">
-            <h3 class="text-[22px] font-bold text-white">Mody Interior</h3>
-            <span class="text-2xl font-extrabold text-white">$29.99</span>
-          </div>
-          <ul class="space-y-2.5 text-white/90 text-[15px]">
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">vacuum</span> Deep Vacuum</li>
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">cleaning_services</span> Dust & Surface Wipe</li>
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">visibility</span> Window Clarity (interior)</li>
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">format_color_reset</span> Dashboard Dressing</li>
+          <p class="text-white/50 font-bold text-xs tracking-widest mb-3">02</p>
+          <span class="material-symbols-outlined text-4xl text-white mb-4 block">directions_car</span>
+          <div class="flex justify-between items-start mb-5"><h3 class="font-bold text-[22px] text-white">Mody Interior</h3><span class="text-2xl font-extrabold text-white">$29.99</span></div>
+          <ul class="space-y-2.5 text-white/90 text-sm mb-5">
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Deep vacuuming for the cabin and car trunk</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Dashboard polishing</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Dust and impurity removal</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Floor carpet washing</li>
+          </ul>
+          <div class="ap"><span class="material-symbols-outlined text-sm text-amber-300 flex-shrink-0 mt-0.5">add_circle</span><span><strong>Add-on +$10:</strong> Stain &amp; spill removal from upholstery with steam</span></div>
+        </div>
+        <button onclick="openBooking('Mody Interior','$29.99')" class="mt-8 py-3 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#008080] transition-all">Book Now</button>
+      </div>
+      <!-- Tint -->
+      <div class="bg-[#4B0082] rounded-3xl p-8 flex flex-col justify-between ch">
+        <div>
+          <p class="text-white/50 font-bold text-xs tracking-widest mb-3">03</p>
+          <span class="material-symbols-outlined text-4xl text-white mb-4 block">shield_with_house</span>
+          <div class="flex justify-between items-start mb-1"><h3 class="font-bold text-[22px] text-white leading-tight">Window Tint<br>Removal</h3><span class="text-2xl font-extrabold text-white">$29.99</span></div>
+          <p class="text-white/55 text-xs italic mb-5">Specialized service for tint removal</p>
+          <ul class="space-y-2.5 text-white/90 text-sm">
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Removal without scratches using precise tools</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Cleaning adhesive residue to ensure clear glass</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Restoring glass to factory condition</li>
           </ul>
         </div>
-        <button onclick="openBooking('Mody Interior', '$29.99')" class="mt-7 py-3 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#007A6E] transition-all text-[15px]">
-          Book Now
-        </button>
-      </div>
-
-      <!-- 3. Window Tint Removal -->
-      <div class="md:col-span-4 pkg-card bg-gradient-to-br from-[#4B0082] to-[#7B2FBE] p-7 rounded-2xl flex flex-col justify-between">
-        <div>
-          <span class="material-symbols-outlined text-4xl text-white/80 mb-4 block">shield_with_house</span>
-          <div class="flex justify-between items-start mb-5">
-            <h3 class="text-[22px] font-bold text-white">Tint Removal</h3>
-            <span class="text-2xl font-extrabold text-white">$29.99</span>
-          </div>
-          <p class="text-white/80 text-[15px] mb-3">Scratch-free, residue-free removal using precision heat tech.</p>
-          <ul class="space-y-2.5 text-white/90 text-[15px]">
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">wb_sunny</span> Heat Gun Technique</li>
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">layers_clear</span> Residue-Free</li>
-            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-white/60">emergency</span> No Scratches Guarantee</li>
-          </ul>
-        </div>
-        <button onclick="openBooking('Window Tint Removal', '$29.99')" class="mt-7 py-3 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#4B0082] transition-all text-[15px]">
-          Book Now
-        </button>
-      </div>
-
-      <!-- 4. Mody Combo -->
-      <div class="md:col-span-5 pkg-card bg-gradient-to-br from-[#002147] to-[#00448c] p-7 rounded-2xl flex flex-col justify-between">
-        <div class="flex flex-col md:flex-row gap-6 items-start mb-6">
-          <img class="w-full md:w-2/5 aspect-video object-cover rounded-xl border border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPqHrOiuZX8_JkAyJHl8c9FXLXSoEXXdNFzSBl_sAvFoISsygprotB_SMCVLI6n9Ri1nKL1xfOm0uYz1V_aU-C0v59IotJYdupnb40Xf3N79GAXWPsnc_2lEcJbgRyOl6xLIysbGmfBphD-P34sCb0_NeYy2ApS-2cbMXutMNfSDuvyVYHlN-bw-SX8_zXHtUpv3Nd5yI6vqqXzWAut5ajRSCpe_0waLjjPGy1V94CE2vobv6rvwuYOXwMS8-SynFyvLK_t8AisEI" alt="clean car interior"/>
-          <div class="flex-1">
-            <span class="material-symbols-outlined text-3xl text-white/70 mb-2 block">brightness_high</span>
-            <h3 class="text-[22px] font-bold text-white mb-2">Mody Combo</h3>
-            <p class="text-white/75 text-[14px] mb-4">Complete interior + exterior revival for the daily driver.</p>
-            <div class="flex items-baseline gap-2">
-              <span class="text-3xl font-extrabold text-white">$49.99</span>
-              <span class="text-white/40 line-through text-sm">Save $10</span>
-            </div>
-          </div>
-        </div>
-        <ul class="grid grid-cols-2 gap-2 mb-6 text-[14px] text-white/85">
-          <li class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] text-[#00ccf9]">check_circle</span> Deep Vacuum</li>
-          <li class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] text-[#00ccf9]">check_circle</span> Ph-Neutral Wash</li>
-          <li class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] text-[#00ccf9]">check_circle</span> Window Clarity</li>
-          <li class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] text-[#00ccf9]">check_circle</span> Rim Detailing</li>
-        </ul>
-        <button onclick="openBooking('Mody Combo', '$49.99')" class="py-3.5 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#002147] transition-all text-[15px]">
-          Book Now
-        </button>
-      </div>
-
-      <!-- 5. Super Mody (Featured) -->
-      <div class="md:col-span-7 pkg-card bg-[#005bb7] p-7 rounded-2xl flex flex-col justify-between relative overflow-hidden">
-        <div class="absolute -right-8 -top-8 w-40 h-40 bg-[#00ccf9]/15 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="relative z-10">
-          <span class="bg-amber-400 text-amber-950 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-tight mb-4 inline-block">⭐ Ultimate Care</span>
-          <h3 class="text-[28px] font-extrabold text-white mb-2">Super Mody</h3>
-          <p class="text-white/80 text-[15px] mb-6 max-w-lg">Our flagship showroom experience. Every surface treated to perfection — inside, outside, and under the hood.</p>
-          <div class="grid grid-cols-2 gap-3 text-[14px] text-white/90 mb-6">
-            <div class="bg-white/10 rounded-xl p-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-amber-300 text-[18px]">diamond</span> Clay Bar Treatment
-            </div>
-            <div class="bg-white/10 rounded-xl p-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-amber-300 text-[18px]">auto_fix_high</span> Hand Wax
-            </div>
-            <div class="bg-white/10 rounded-xl p-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-amber-300 text-[18px]">airway</span> AC Sanitizer
-            </div>
-            <div class="bg-white/10 rounded-xl p-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-amber-300 text-[18px]">settings_input_component</span> Engine Bay Detail
-            </div>
-            <div class="bg-white/10 rounded-xl p-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-amber-300 text-[18px]">spa</span> Odor Neutralizer
-            </div>
-            <div class="bg-white/10 rounded-xl p-3 flex items-center gap-2">
-              <span class="material-symbols-outlined text-amber-300 text-[18px]">star</span> Full Interior Detail
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
-          <span class="text-4xl font-black text-white">$99.99</span>
-          <button onclick="openBooking('Super Mody', '$99.99')" class="bg-white text-[#005bb7] px-8 py-3.5 rounded-xl font-bold hover:bg-blue-50 transition-colors flex-1 sm:flex-none sm:min-w-[180px] text-center text-[15px]">
-            Book Now
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     CTA BANNER
-════════════════════════════════════════════ -->
-<section class="py-16 px-6 md:px-8">
-  <div class="max-w-[1280px] mx-auto">
-    <div class="bg-gradient-to-r from-[#001d3d] to-[#00448c] rounded-[2.5rem] p-10 md:p-16 text-center relative overflow-hidden">
-      <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/water-bubbles.png')]"></div>
-      <div class="relative z-10 space-y-6">
-        <h2 class="text-white text-[34px] md:text-[44px] font-extrabold tracking-tight">Ready for that new car feel?</h2>
-        <p class="text-blue-100 text-[17px] max-w-xl mx-auto">Skip the scratchy automatic tunnels. Give your car the premium hand-wash treatment it deserves today.</p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4 pt-2">
-          <a href="#location" class="bg-[#00ccf9] text-[#005266] px-8 py-3.5 rounded-2xl font-bold text-[15px] hover:brightness-110 transition-all">
-            Find Our Location
-          </a>
-          <button onclick="openContact()" class="bg-white/10 backdrop-blur-md text-white border border-white/30 px-8 py-3.5 rounded-2xl font-bold text-[15px] hover:bg-white/20 transition-all">
-            Contact Us
-          </button>
-        </div>
+        <button onclick="openBooking('Window Tint Removal','$29.99')" class="mt-8 py-3 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#4B0082] transition-all">Book Now</button>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ═══════════════════════════════════════════
-     LOCATION & HOURS
-════════════════════════════════════════════ -->
-<section id="location" class="py-20 bg-[#f7f9fb]">
-  <div class="max-w-[1280px] mx-auto px-6 md:px-8">
-    <div class="text-center mb-12">
-      <span class="inline-block px-3 py-1 bg-[#b7eaff] text-[#001f28] text-xs font-bold rounded-full uppercase tracking-widest mb-3">Find Us</span>
-      <h2 class="text-[28px] md:text-[32px] font-bold text-[#00448c] tracking-tight">Our Location & Hours</h2>
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-8 items-start">
-      <!-- Map embed -->
-      <div class="rounded-2xl overflow-hidden shadow-xl border border-blue-100 bg-white">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3106.123456789!2d-76.9542!3d38.8282!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s4533+Saint+Barnabas+Rd%2C+Temple+Hills%2C+MD+20748!5e0!3m2!1sen!2sus!4v1699000000000!5m2!1sen!2sus"
-          width="100%"
-          height="320"
-          style="border:0;"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          title="Mody Car Wash Location">
-        </iframe>
-        <div class="p-5 flex items-start gap-3">
-          <span class="material-symbols-outlined text-[#00448c] mt-0.5">location_on</span>
+    <!-- Row 2 -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Combo -->
+      <div class="bg-[#002147] rounded-3xl p-8 flex flex-col ch">
+        <div class="flex flex-col sm:flex-row gap-6 items-start mb-6">
+          <img class="w-full sm:w-40 aspect-video object-cover rounded-2xl border border-white/20 flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPqHrOiuZX8_JkAyJHl8c9FXLXSoEXXdNFzSBl_sAvFoISsygprotB_SMCVLI6n9Ri1nKL1xfOm0uYz1V_aU-C0v59IotJYdupnb40Xf3N79GAXWPsnc_2lEcJbgRyOl6xLIysbGmfBphD-P34sCb0_NeYy2ApS-2cbMXutMNfSDuvyVYHlN-bw-SX8_zXHtUpv3Nd5yI6vqqXzWAut5ajRSCpe_0waLjjPGy1V94CE2vobv6rvwuYOXwMS8-SynFyvLK_t8AisEI" alt="car interior"/>
           <div>
-            <p class="font-bold text-[#00448c] text-[16px]">Mody Car Wash</p>
-            <p class="text-slate-500 text-[14px]">4533 Saint Barnabas Road<br/>Temple Hills, Maryland 20748<br/>United States</p>
-            <a href="https://maps.google.com/?q=4533+Saint+Barnabas+Road+Temple+Hills+MD+20748" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-[13px] font-semibold text-[#00448c] hover:underline">
-              Get Directions <span class="material-symbols-outlined text-[14px]">open_in_new</span>
-            </a>
+            <p class="text-white/50 font-bold text-xs tracking-widest mb-2">04</p>
+            <span class="material-symbols-outlined text-3xl text-white mb-1 block">brightness_high</span>
+            <h3 class="font-bold text-[22px] text-white mb-1">Mody Combo</h3>
+            <p class="text-white/60 text-sm">One package — all Interior &amp; Exterior services combined.</p>
           </div>
         </div>
+        <ul class="space-y-2 text-white/85 text-sm mb-6 flex-1">
+          <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-[#00ccf9] mt-0.5 flex-shrink-0">check_circle</span>Full Exterior: high-pressure wash, paint-safe detergents, hand-dry, glass cleaning</li>
+          <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-[#00ccf9] mt-0.5 flex-shrink-0">check_circle</span>Full Interior: cabin &amp; trunk vacuuming, dashboard polish, floor mat washing</li>
+          <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-amber-300 mt-0.5 flex-shrink-0">add_circle</span><span><strong class="text-amber-300">Add-ons:</strong> Precise rim detailing &amp; Tire Shine</span></li>
+        </ul>
+        <div class="flex items-center gap-3 mb-5"><span class="text-3xl font-extrabold text-white">$49.99</span><span class="bg-green-500/20 text-green-300 text-xs font-bold px-2.5 py-1 rounded-full">Save $10</span></div>
+        <button onclick="openBooking('Mody Combo','$49.99')" class="py-4 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#002147] transition-all">Book Now</button>
       </div>
-
-      <!-- Hours card -->
-      <div class="bg-white rounded-2xl border border-blue-50 luminous-shadow overflow-hidden">
-        <div class="bg-gradient-to-r from-[#00448c] to-[#005bb7] px-6 py-5">
-          <h3 class="text-white font-bold text-[18px] flex items-center gap-2">
-            <span class="material-symbols-outlined">schedule</span>
-            Business Hours
-          </h3>
-          <p class="text-blue-200 text-[13px] mt-1" id="current-status">Loading status...</p>
+      <!-- Super -->
+      <div class="bg-[#005bb7] rounded-3xl p-8 flex flex-col relative overflow-hidden ch">
+        <div class="absolute -right-6 -top-6 w-40 h-40 bg-[#00ccf9]/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-6 -bottom-6 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="relative z-10 flex-1">
+          <div class="flex items-center gap-3 mb-4"><p class="text-white/50 font-bold text-xs tracking-widest">05</p><span class="bg-amber-400 text-amber-950 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Ultimate Care</span></div>
+          <h3 class="text-3xl font-extrabold text-white mb-1">Super Mody</h3>
+          <p class="text-white/65 text-sm mb-5">Everything in Mody Combo, plus the full premium showroom experience.</p>
+          <ul class="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-white/90 mb-6">
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-amber-300 mt-0.5 flex-shrink-0">star</span>Engine bay cleaning</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-amber-300 mt-0.5 flex-shrink-0">star</span>Steam cleaning</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-amber-300 mt-0.5 flex-shrink-0">star</span>Stain, spill &amp; odor removal</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-amber-300 mt-0.5 flex-shrink-0">star</span>Hydrophobic glass treatment</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-amber-300 mt-0.5 flex-shrink-0">star</span>Interior upholstery perfuming</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-amber-300 mt-0.5 flex-shrink-0">star</span>Tire blackening</li>
+          </ul>
         </div>
-        <div class="divide-y divide-slate-100">
-          <div class="flex justify-between items-center px-6 py-3.5 bg-blue-50/40">
-            <span class="font-semibold text-slate-700 text-[14px]">Monday</span>
-            <span class="font-bold text-[#00448c] text-[14px]">9:00 AM – 5:00 PM</span>
-          </div>
-          <div class="flex justify-between items-center px-6 py-3.5">
-            <span class="font-semibold text-slate-700 text-[14px]">Tuesday</span>
-            <span class="font-bold text-[#00448c] text-[14px]">9:00 AM – 5:00 PM</span>
-          </div>
-          <div class="flex justify-between items-center px-6 py-3.5 bg-blue-50/40">
-            <span class="font-semibold text-slate-700 text-[14px]">Wednesday</span>
-            <span class="font-bold text-[#00448c] text-[14px]">9:00 AM – 5:00 PM</span>
-          </div>
-          <div class="flex justify-between items-center px-6 py-3.5">
-            <span class="font-semibold text-slate-700 text-[14px]">Thursday</span>
-            <span class="font-bold text-[#00448c] text-[14px]">9:00 AM – 5:00 PM</span>
-          </div>
-          <div class="flex justify-between items-center px-6 py-3.5 bg-blue-50/40">
-            <span class="font-semibold text-slate-700 text-[14px]">Friday</span>
-            <span class="font-bold text-[#00448c] text-[14px]">9:00 AM – 5:00 PM</span>
-          </div>
-          <div class="flex justify-between items-center px-6 py-3.5">
-            <span class="font-semibold text-slate-700 text-[14px]">Saturday</span>
-            <span class="font-bold text-[#00448c] text-[14px]">9:00 AM – 5:00 PM</span>
-          </div>
-          <div class="flex justify-between items-center px-6 py-3.5 bg-red-50/50">
-            <span class="font-semibold text-slate-500 text-[14px]">Sunday</span>
-            <span class="closed-badge">Closed</span>
-          </div>
-        </div>
-        <div class="px-6 py-4 border-t border-slate-100 flex items-center gap-2 text-[13px] text-slate-500">
-          <span class="material-symbols-outlined text-[16px] text-amber-500">info</span>
-          Last appointments accepted 30 min before closing.
+        <div class="relative z-10 flex flex-col gap-4">
+          <span class="text-4xl font-black text-white">$99.99</span>
+          <button onclick="openBooking('Super Mody','$99.99')" class="bg-white text-[#005bb7] w-full py-4 rounded-xl font-bold hover:bg-blue-50 transition-colors">Book Now</button>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     FOOTER
-════════════════════════════════════════════ -->
-<footer class="bg-slate-50 border-t border-blue-100">
-  <div class="max-w-[1280px] mx-auto px-6 md:px-8 py-14 flex flex-col md:flex-row justify-between items-start gap-10">
-    <div class="space-y-3 max-w-xs">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-[#00448c] rounded-lg flex items-center justify-center">
-          <span class="material-symbols-outlined text-white text-[16px]">water_drop</span>
-        </div>
-        <span class="text-lg font-bold text-[#00448c]">Mody Car Wash</span>
+<!-- LOCATIONS -->
+<section class="py-section-padding bg-[#f7f9fb]" id="locations">
+  <div class="max-w-[1280px] mx-auto px-6 md:px-8">
+    <div class="text-center mb-12 space-y-4">
+      <h2 class="font-bold text-[32px] text-[#00448c]">Our Location</h2>
+      <div class="w-24 h-1.5 bg-[#00ccf9] mx-auto rounded-full"></div>
+      <p class="text-[#424752]">Visit us in Temple Hills, Maryland — where every car gets the care it deserves.</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-8 items-stretch">
+      <div class="bg-white rounded-3xl p-10 shadow-lg border border-blue-50 flex flex-col gap-7">
+        <div class="flex items-start gap-5"><div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-[#00448c]">location_on</span></div><div><p class="font-bold text-[#00448c] text-lg mb-1">Address</p><p class="text-slate-600 leading-relaxed">4533 Saint Barnabas Rd<br/>Temple Hills, MD 20748</p></div></div>
+        <div class="h-px bg-blue-50"></div>
+        <div class="flex items-start gap-5"><div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-[#00448c]">schedule</span></div><div class="w-full"><p class="font-bold text-[#00448c] text-lg mb-3">Hours of Operation</p><div class="space-y-2 text-slate-600"><div class="flex justify-between"><span class="font-medium">Monday – Saturday</span><span class="font-bold text-[#00448c]">9:00 AM – 5:00 PM</span></div><div class="flex justify-between"><span class="font-medium">Sunday</span><span class="font-bold text-red-500">Closed</span></div></div></div></div>
+        <div class="h-px bg-blue-50"></div>
+        <div class="flex items-start gap-5"><div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-[#00448c]">payments</span></div><div><p class="font-bold text-[#00448c] text-lg mb-1">Payment &amp; Booking</p><p class="text-slate-600 text-sm leading-relaxed">No payment required at booking — pay on arrival.<br/>Each appointment is <strong>1 hour</strong>. Please arrive <strong>15 minutes early</strong>.</p></div></div>
+        <a href="https://maps.google.com/?q=4533+Saint+Barnabas+Rd,+Temple+Hills,+MD+20748" target="_blank" class="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-[#00448c] text-white font-bold rounded-xl hover:bg-[#005bb7] transition-colors"><span class="material-symbols-outlined">map</span>Get Directions on Google Maps</a>
       </div>
+      <div class="rounded-3xl overflow-hidden shadow-lg border border-blue-50 min-h-[420px]">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3105.9!2d-76.9554!3d38.8295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b7b1f900000001%3A0x1!2s4533+Saint+Barnabas+Rd%2C+Temple+Hills%2C+MD+20748!5e0!3m2!1sen!2sus!4v1" width="100%" height="100%" style="border:0;min-height:420px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-section-padding">
+  <div class="max-w-[1280px] mx-auto px-6 md:px-8">
+    <div class="bg-gradient-to-r from-blue-900 to-[#00448c] rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10" style="background-image:url('https://www.transparenttextures.com/patterns/water-bubbles.png')"></div>
+      <div class="relative z-10 space-y-8">
+        <h2 class="text-white font-extrabold text-[40px] md:text-[52px] leading-tight tracking-tight">Ready for that new car feel?</h2>
+        <p class="text-blue-100 text-[18px] max-w-2xl mx-auto">Skip the scratchy automatic tunnels. Give your car the premium hand-wash treatment it deserves today.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="#locations" class="bg-[#00ccf9] text-[#005266] px-10 py-4 rounded-2xl font-bold text-lg hover:brightness-110 transition-all">Find Our Location</a>
+          <button onclick="openBooking()" class="bg-white/10 backdrop-blur-md text-white border border-white/30 px-10 py-4 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all">Book a Wash</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-slate-50 border-t border-blue-100">
+  <div class="max-w-[1280px] mx-auto px-6 md:px-8 py-16 flex flex-col md:flex-row justify-between items-start gap-10">
+    <div class="space-y-3 max-w-xs">
+      <div class="text-xl font-extrabold text-blue-800">Mody Car Wash</div>
       <p class="text-sm text-slate-500">Meticulous clarity in every shine. Hand-washing for those who love their cars as much as we do.</p>
-      <p class="text-sm text-slate-400 flex items-center gap-1">
-        <span class="material-symbols-outlined text-[14px]">location_on</span>
-        Temple Hills, Maryland 20748
-      </p>
+      <p class="text-sm text-slate-400">4533 Saint Barnabas Rd, Temple Hills, MD 20748</p>
+      <p class="text-sm text-slate-400">Mon–Sat: 9:00 AM – 5:00 PM &nbsp;|&nbsp; Sunday: Closed</p>
     </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-3">
-      <a href="#services" class="text-slate-500 hover:text-[#00448c] transition-colors text-sm font-medium">Services</a>
-      <a href="#location" class="text-slate-500 hover:text-[#00448c] transition-colors text-sm font-medium">Location</a>
-      <button onclick="openContact()" class="text-left text-slate-500 hover:text-[#00448c] transition-colors text-sm font-medium">Contact Us</button>
-      <a href="#" class="text-slate-500 hover:text-[#00448c] transition-colors text-sm font-medium">Privacy Policy</a>
-      <a href="#" class="text-slate-500 hover:text-[#00448c] transition-colors text-sm font-medium">Terms of Service</a>
-      <a href="#" class="text-slate-500 hover:text-[#00448c] transition-colors text-sm font-medium">FAQs</a>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-4">
+      <a class="text-slate-500 hover:text-blue-700 transition-colors text-sm" href="#">Terms of Service</a>
+      <a class="text-slate-500 hover:text-blue-700 transition-colors text-sm" href="#">Privacy Policy</a>
+      <a class="text-slate-500 hover:text-blue-700 transition-colors text-sm" href="#">Careers</a>
+      <button onclick="openContact()" class="text-slate-500 hover:text-blue-700 transition-colors text-sm text-left">Contact Us</button>
+      <a class="text-slate-500 hover:text-blue-700 transition-colors text-sm" href="#">Gift Cards</a>
+      <a class="text-slate-500 hover:text-blue-700 transition-colors text-sm" href="#">FAQs</a>
     </div>
-
-    <div class="space-y-3">
+    <div class="space-y-4">
       <p class="text-sm font-bold text-[#00448c]">Follow Our Shines</p>
       <div class="flex gap-3">
-        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-[#00448c] cursor-pointer hover:bg-[#00448c] hover:text-white transition-all">
-          <span class="material-symbols-outlined text-xl">camera</span>
-        </div>
-        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-[#00448c] cursor-pointer hover:bg-[#00448c] hover:text-white transition-all">
-          <span class="material-symbols-outlined text-xl">share</span>
-        </div>
+        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 cursor-pointer hover:bg-[#00448c] hover:text-white transition-all"><span class="material-symbols-outlined text-xl">camera</span></div>
+        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 cursor-pointer hover:bg-[#00448c] hover:text-white transition-all"><span class="material-symbols-outlined text-xl">share</span></div>
       </div>
     </div>
   </div>
-  <div class="border-t border-blue-100 py-5 text-center">
-    <p class="text-xs text-slate-400">© 2024 Mody Car Wash · Temple Hills, Maryland · Meticulous clarity in every shine.</p>
+  <div class="max-w-[1280px] mx-auto px-6 md:px-8 pb-8 border-t border-blue-50 pt-6">
+    <p class="text-sm text-slate-400">&copy; 2024 Mody Car Wash. Meticulous clarity in every shine.</p>
   </div>
 </footer>
 
-<!-- ═══════════════════════════════════════════
-     CONTACT MODAL
-════════════════════════════════════════════ -->
-<div id="contact-modal" class="fixed inset-0 z-[100] items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative overflow-hidden">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-[#00448c] to-[#005bb7] px-7 py-6">
-      <button onclick="closeContact()" class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors">
-        <span class="material-symbols-outlined text-[22px]">close</span>
-      </button>
-      <h3 class="text-white font-bold text-[22px]">Get in Touch</h3>
-      <p class="text-blue-200 text-[14px] mt-1">We'll get back to you within 24 hours.</p>
-    </div>
-    <!-- Form -->
-    <form id="contact-form" class="px-7 py-6 space-y-4" onsubmit="submitContact(event)">
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Full Name *</label>
-          <input type="text" name="name" required placeholder="John Smith" class="form-input"/>
-        </div>
-        <div>
-          <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Phone</label>
-          <input type="tel" name="phone" placeholder="(301) 555-0000" class="form-input"/>
-        </div>
-      </div>
-      <div>
-        <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Email Address *</label>
-        <input type="email" name="email" required placeholder="you@example.com" class="form-input"/>
-      </div>
-      <div>
-        <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Message *</label>
-        <textarea name="message" required placeholder="How can we help you?" rows="4" class="form-input resize-none"></textarea>
-      </div>
-      <button type="submit" class="w-full bg-[#00448c] text-white py-3.5 rounded-xl font-bold text-[15px] hover:bg-[#005bb7] transition-colors flex items-center justify-center gap-2">
-        <span class="material-symbols-outlined text-[18px]">send</span>
-        Send Message
-      </button>
-      <p class="text-center text-[12px] text-slate-400">Or call us directly at <a href="tel:+13015550000" class="text-[#00448c] font-semibold">(301) 555-0000</a></p>
-    </form>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
+<!-- ══════════════════════════════════════
      BOOKING MODAL
-════════════════════════════════════════════ -->
-<div id="booking-modal" class="fixed inset-0 z-[100] items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative overflow-hidden">
-    <div class="bg-gradient-to-r from-[#002147] to-[#00448c] px-7 py-6">
-      <button onclick="closeBooking()" class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors">
-        <span class="material-symbols-outlined text-[22px]">close</span>
-      </button>
-      <p class="text-blue-200 text-[12px] uppercase tracking-widest font-bold mb-1">Booking</p>
-      <h3 class="text-white font-bold text-[22px]" id="booking-title">Super Mody</h3>
-      <div class="flex items-center gap-2 mt-2">
-        <span class="text-2xl font-extrabold text-white" id="booking-price">$99.99</span>
-        <span class="bg-white/20 text-white text-[12px] px-2.5 py-0.5 rounded-full font-semibold">Hand Wash</span>
+══════════════════════════════════════ -->
+<div id="booking-modal" class="modal-overlay" onclick="if(event.target===this)closeBooking()">
+  <div class="modal-box">
+    <div class="bg-gradient-to-r from-[#002147] to-[#005bb7] p-6 rounded-t-[24px]">
+      <div class="flex justify-between items-start mb-5">
+        <div><p class="text-[#00ccf9] text-xs font-bold tracking-widest uppercase mb-1">Schedule Your Visit</p><h2 class="text-white text-xl font-extrabold">Book an Appointment</h2></div>
+        <button onclick="closeBooking()" class="text-white/60 hover:text-white p-1"><span class="material-symbols-outlined text-[22px]">close</span></button>
+      </div>
+      <div class="flex items-center mt-1">
+        <div class="flex flex-col items-center gap-1"><div id="sc1" class="sc bg-white text-[#00448c]">1</div><span class="text-white/70 text-[9px] font-bold mt-0.5 tracking-wide">SERVICE</span></div>
+        <div id="sl1" class="sl bg-white/25 mx-1.5 mb-4"></div>
+        <div class="flex flex-col items-center gap-1"><div id="sc2" class="sc bg-white/20 text-white">2</div><span class="text-white/40 text-[9px] font-bold mt-0.5 tracking-wide">DATE</span></div>
+        <div id="sl2" class="sl bg-white/25 mx-1.5 mb-4"></div>
+        <div class="flex flex-col items-center gap-1"><div id="sc3" class="sc bg-white/20 text-white">3</div><span class="text-white/40 text-[9px] font-bold mt-0.5 tracking-wide">INFO</span></div>
+        <div id="sl3" class="sl bg-white/25 mx-1.5 mb-4"></div>
+        <div class="flex flex-col items-center gap-1"><div id="sc4" class="sc bg-white/20 text-white">4</div><span class="text-white/40 text-[9px] font-bold mt-0.5 tracking-wide">CONFIRM</span></div>
       </div>
     </div>
-    <form id="booking-form" class="px-7 py-6 space-y-4" onsubmit="submitBooking(event)">
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Full Name *</label>
-          <input type="text" name="name" required placeholder="John Smith" class="form-input"/>
+
+    <div class="p-6">
+
+      <!-- STEP 1 -->
+      <div id="step1">
+        <h3 class="font-bold text-[#00448c] text-base mb-4">Choose Your Service</h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-3 border-2 border-slate-100 rounded-xl p-3.5 cursor-pointer hover:border-[#00448c] transition-all has-[:checked]:border-[#00448c] has-[:checked]:bg-blue-50">
+            <input type="radio" name="svc" value="Mody Exterior" data-price="$29.99" class="accent-[#00448c] w-4 h-4 flex-shrink-0">
+            <div class="w-8 h-8 rounded-full bg-[#00AEEF] flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white text-sm">water_drop</span></div>
+            <div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-sm">Mody Exterior</p><p class="text-xs text-slate-500">High-pressure wash, rim cleaning, glass polish</p></div>
+            <span class="font-extrabold text-[#00448c] text-sm flex-shrink-0">$29.99</span>
+          </label>
+          <label class="flex items-center gap-3 border-2 border-slate-100 rounded-xl p-3.5 cursor-pointer hover:border-[#00448c] transition-all has-[:checked]:border-[#00448c] has-[:checked]:bg-blue-50">
+            <input type="radio" name="svc" value="Mody Interior" data-price="$29.99" class="accent-[#00448c] w-4 h-4 flex-shrink-0">
+            <div class="w-8 h-8 rounded-full bg-[#008080] flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white text-sm">directions_car</span></div>
+            <div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-sm">Mody Interior</p><p class="text-xs text-slate-500">Deep vacuum, dashboard polish, floor mats</p></div>
+            <span class="font-extrabold text-[#00448c] text-sm flex-shrink-0">$29.99</span>
+          </label>
+          <label class="flex items-center gap-3 border-2 border-slate-100 rounded-xl p-3.5 cursor-pointer hover:border-[#00448c] transition-all has-[:checked]:border-[#00448c] has-[:checked]:bg-blue-50">
+            <input type="radio" name="svc" value="Window Tint Removal" data-price="$29.99" class="accent-[#00448c] w-4 h-4 flex-shrink-0">
+            <div class="w-8 h-8 rounded-full bg-[#4B0082] flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white text-sm">shield_with_house</span></div>
+            <div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-sm">Window Tint Removal</p><p class="text-xs text-slate-500">Scratch-free, residue-free, factory restore</p></div>
+            <span class="font-extrabold text-[#00448c] text-sm flex-shrink-0">$29.99</span>
+          </label>
+          <label class="flex items-center gap-3 border-2 border-slate-100 rounded-xl p-3.5 cursor-pointer hover:border-[#00448c] transition-all has-[:checked]:border-[#00448c] has-[:checked]:bg-blue-50">
+            <input type="radio" name="svc" value="Mody Combo" data-price="$49.99" class="accent-[#00448c] w-4 h-4 flex-shrink-0">
+            <div class="w-8 h-8 rounded-full bg-[#002147] flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white text-sm">brightness_high</span></div>
+            <div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-sm">Mody Combo <span class="text-green-600 text-xs">Save $10</span></p><p class="text-xs text-slate-500">Full interior + exterior + rim detail + tire shine</p></div>
+            <span class="font-extrabold text-[#00448c] text-sm flex-shrink-0">$49.99</span>
+          </label>
+          <label class="flex items-center gap-3 border-2 border-amber-200 bg-amber-50/30 rounded-xl p-3.5 cursor-pointer hover:border-amber-400 transition-all has-[:checked]:border-amber-400 has-[:checked]:bg-amber-50">
+            <input type="radio" name="svc" value="Super Mody" data-price="$99.99" class="accent-amber-500 w-4 h-4 flex-shrink-0">
+            <div class="w-8 h-8 rounded-full bg-[#005bb7] flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-amber-300 text-sm">star</span></div>
+            <div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-sm">Super Mody <span class="bg-amber-400 text-amber-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full">ULTIMATE</span></p><p class="text-xs text-slate-500">Full combo + engine, steam, hydrophobic glass, perfume</p></div>
+            <span class="font-extrabold text-[#00448c] text-sm flex-shrink-0">$99.99</span>
+          </label>
         </div>
-        <div>
-          <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Phone *</label>
-          <input type="tel" name="phone" required placeholder="(301) 555-0000" class="form-input"/>
+        <p id="svc-err" class="text-red-500 text-xs mt-2 hidden">Please select a service to continue.</p>
+        <button onclick="step1Next()" class="mt-5 w-full bg-[#00448c] text-white py-3.5 rounded-xl font-bold hover:bg-[#005bb7] transition-colors flex items-center justify-center gap-2">
+          Continue <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </button>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="step2" class="hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <button onclick="goStep(1)" class="text-slate-400 hover:text-[#00448c] transition-colors"><span class="material-symbols-outlined">arrow_back</span></button>
+          <h3 class="font-bold text-[#00448c] text-base">Pick Date &amp; Time</h3>
         </div>
-      </div>
-      <div>
-        <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Email Address *</label>
-        <input type="email" name="email" required placeholder="you@example.com" class="form-input"/>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Preferred Date *</label>
-          <input type="date" name="date" required class="form-input" id="booking-date"/>
+        <!-- Info banner -->
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 mb-5 text-sm text-blue-700 space-y-1">
+          <p class="flex items-center gap-2"><span class="material-symbols-outlined text-base flex-shrink-0">event</span><span>Open <strong>Mon–Sat</strong>, 9:00 AM – 5:00 PM. Last appointment: <strong>4:00 PM</strong>.</span></p>
+          <p class="flex items-center gap-2 text-amber-700 bg-amber-50 rounded-lg px-2 py-1.5"><span class="material-symbols-outlined text-base flex-shrink-0">alarm</span><span>Please arrive <strong>15 minutes before</strong> your scheduled time.</span></p>
         </div>
-        <div>
-          <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Preferred Time *</label>
-          <select name="time" required class="form-input">
-            <option value="">Select time</option>
-            <option>9:00 AM</option>
-            <option>10:00 AM</option>
-            <option>11:00 AM</option>
-            <option>12:00 PM</option>
-            <option>1:00 PM</option>
-            <option>2:00 PM</option>
-            <option>3:00 PM</option>
-            <option>4:00 PM</option>
-          </select>
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1.5">Appointment Date <span class="text-red-500">*</span></label>
+            <input type="date" id="bk-date" class="fi" onchange="onDateChange(this)" required/>
+            <p id="date-err" class="text-red-500 text-xs mt-1 hidden"></p>
+          </div>
+          <div id="slots-wrap" class="hidden">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-sm font-bold text-slate-700">Select Time <span class="text-red-500">*</span></label>
+              <div id="slots-loader" class="hidden flex items-center gap-1.5 text-xs text-[#00448c] font-semibold">
+                <span class="spin material-symbols-outlined text-sm">progress_activity</span> Checking availability...
+              </div>
+            </div>
+            <div class="flex items-center gap-4 mb-3 text-xs text-slate-500">
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-[#00448c] inline-block"></span>Available</span>
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-slate-200 inline-block border border-slate-300"></span>Booked</span>
+            </div>
+            <!-- 8 slots in 2 rows of 4 -->
+            <div class="grid grid-cols-4 gap-2.5" id="time-slots"></div>
+            <p id="time-err" class="text-red-500 text-xs mt-2 hidden">Please select a time slot.</p>
+          </div>
         </div>
+        <button onclick="step2Next()" class="mt-6 w-full bg-[#00448c] text-white py-3.5 rounded-xl font-bold hover:bg-[#005bb7] transition-colors flex items-center justify-center gap-2">
+          Continue <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </button>
       </div>
-      <div>
-        <label class="block text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Vehicle (Make & Model)</label>
-        <input type="text" name="vehicle" placeholder="e.g. Toyota Camry 2021" class="form-input"/>
+
+      <!-- STEP 3 -->
+      <div id="step3" class="hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <button onclick="goStep(2)" class="text-slate-400 hover:text-[#00448c] transition-colors"><span class="material-symbols-outlined">arrow_back</span></button>
+          <h3 class="font-bold text-[#00448c] text-base">Your Information</h3>
+        </div>
+        <div class="space-y-4">
+          <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Full Name <span class="text-red-500">*</span></label><input type="text" id="bk-name" placeholder="John Smith" class="fi" required/></div>
+          <div class="grid grid-cols-2 gap-4">
+            <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Email <span class="text-red-500">*</span></label><input type="email" id="bk-email" placeholder="you@email.com" class="fi" required/></div>
+            <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Phone <span class="text-red-500">*</span></label><input type="tel" id="bk-phone" placeholder="(301) 555-0000" class="fi" required/></div>
+          </div>
+          <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Vehicle (Optional)</label><input type="text" id="bk-vehicle" placeholder="e.g. Toyota Camry 2021" class="fi"/></div>
+          <div class="flex items-start gap-3 bg-blue-50 rounded-xl p-4">
+            <input type="checkbox" id="bk-reminder" checked class="mt-0.5 w-4 h-4 accent-[#00448c] flex-shrink-0"/>
+            <label for="bk-reminder" class="text-[13px] text-slate-600 cursor-pointer leading-relaxed"><span class="font-bold text-[#00448c]">Send me a reminder</span> — I'd like an email reminder before my appointment.</label>
+          </div>
+          <p id="info-err" class="text-red-500 text-xs hidden">Please fill in all required fields.</p>
+        </div>
+        <button onclick="step3Next()" class="mt-5 w-full bg-[#00448c] text-white py-3.5 rounded-xl font-bold hover:bg-[#005bb7] transition-colors flex items-center justify-center gap-2">
+          Review Booking <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </button>
       </div>
-      <div class="flex items-start gap-2.5 bg-blue-50 rounded-xl p-3.5">
-        <input type="checkbox" id="reminder-opt" name="reminder" checked class="mt-0.5 w-4 h-4 accent-[#00448c]"/>
-        <label for="reminder-opt" class="text-[13px] text-slate-600 cursor-pointer">
-          <span class="font-semibold text-[#00448c]">Send me a reminder</span> — I'd like an email/SMS reminder before my appointment.
-        </label>
+
+      <!-- STEP 4 -->
+      <div id="step4" class="hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <button onclick="goStep(3)" class="text-slate-400 hover:text-[#00448c] transition-colors"><span class="material-symbols-outlined">arrow_back</span></button>
+          <h3 class="font-bold text-[#00448c] text-base">Review &amp; Confirm</h3>
+        </div>
+        <div class="bg-gradient-to-br from-[#001e4a] to-[#003d8a] rounded-2xl p-5 text-white mb-4 text-sm space-y-2.5">
+          <div class="flex justify-between items-center border-b border-white/15 pb-2.5"><span class="text-white/60 text-xs uppercase tracking-wide">Service</span><span id="sum-service" class="font-bold text-right"></span></div>
+          <div class="flex justify-between items-center border-b border-white/15 pb-2.5"><span class="text-white/60 text-xs uppercase tracking-wide">Date</span><span id="sum-date" class="font-semibold text-xs text-right"></span></div>
+          <div class="flex justify-between items-center border-b border-white/15 pb-2.5"><span class="text-white/60 text-xs uppercase tracking-wide">Time</span><span id="sum-time" class="font-bold"></span></div>
+          <div class="flex justify-between items-center border-b border-white/15 pb-2.5"><span class="text-white/60 text-xs uppercase tracking-wide">Arrive by</span><span id="sum-arrive" class="font-semibold text-[#00ccf9]"></span></div>
+          <div class="flex justify-between items-center border-b border-white/15 pb-2.5"><span class="text-white/60 text-xs uppercase tracking-wide">Name</span><span id="sum-name" class="font-bold"></span></div>
+          <div class="flex justify-between items-center border-b border-white/15 pb-2.5"><span class="text-white/60 text-xs uppercase tracking-wide">Email</span><span id="sum-email" class="font-semibold text-xs break-all text-right max-w-[55%]"></span></div>
+          <div class="flex justify-between items-center border-b border-white/15 pb-2.5"><span class="text-white/60 text-xs uppercase tracking-wide">Phone</span><span id="sum-phone" class="font-bold"></span></div>
+          <div id="sum-vehicle-row" class="flex justify-between items-center border-b border-white/15 pb-2.5 hidden"><span class="text-white/60 text-xs uppercase tracking-wide">Vehicle</span><span id="sum-vehicle" class="font-semibold"></span></div>
+          <div class="flex justify-between items-center pt-1"><span class="text-white/70 font-bold text-xs uppercase tracking-wide">Total</span><span id="sum-price" class="text-2xl font-black text-[#00ccf9]"></span></div>
+        </div>
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 flex items-start gap-2.5 text-sm text-amber-800 mb-5">
+          <span class="material-symbols-outlined text-amber-500 flex-shrink-0 text-base mt-0.5">payments</span>
+          <span>No payment now. <strong>Pay on arrival</strong> at 4533 Saint Barnabas Rd, Temple Hills, MD 20748.</span>
+        </div>
+        <button id="confirm-btn" onclick="submitBooking()" class="w-full bg-[#00448c] text-white py-4 rounded-xl font-bold text-[15px] hover:bg-[#005bb7] transition-colors flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">event_available</span>Confirm Booking
+        </button>
+        <p class="text-center text-[11px] text-slate-400 mt-2">A confirmation email will be sent to your inbox</p>
       </div>
-      <button type="submit" class="w-full bg-[#00448c] text-white py-3.5 rounded-xl font-bold text-[15px] hover:bg-[#005bb7] transition-colors flex items-center justify-center gap-2">
-        <span class="material-symbols-outlined text-[18px]">event_available</span>
-        Confirm Booking
-      </button>
-      <p class="text-center text-[12px] text-slate-400">No payment required now · Pay on arrival</p>
-    </form>
+
+      <!-- STEP 5: Success -->
+      <div id="step5" class="hidden text-center py-6">
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="material-symbols-outlined text-[48px] text-green-600">check_circle</span>
+        </div>
+        <h3 class="font-extrabold text-[22px] text-[#00448c] mb-2">Booking Confirmed!</h3>
+        <p class="text-slate-500 mb-3 text-sm">Your appointment has been successfully booked.</p>
+        <p id="success-detail" class="text-sm font-bold text-[#005bb7] bg-blue-50 rounded-xl px-4 py-2 inline-block mb-2"></p>
+        <p id="success-arrive" class="text-xs text-amber-700 bg-amber-50 rounded-xl px-4 py-2 inline-block mb-5"></p>
+        <div class="bg-blue-50 rounded-xl p-4 text-sm text-slate-600 text-left mb-5 space-y-2.5">
+          <p class="flex items-center gap-2"><span class="material-symbols-outlined text-[#00448c] text-base">location_on</span>4533 Saint Barnabas Rd, Temple Hills, MD 20748</p>
+          <p class="flex items-center gap-2"><span class="material-symbols-outlined text-[#00448c] text-base">schedule</span>Mon–Sat, 9:00 AM – 5:00 PM</p>
+          <p class="flex items-center gap-2"><span class="material-symbols-outlined text-[#00448c] text-base">mail</span>Check your email for confirmation details</p>
+        </div>
+        <button onclick="closeBooking()" class="w-full bg-[#00448c] text-white py-3.5 rounded-xl font-bold hover:bg-[#005bb7] transition-colors">Done</button>
+      </div>
+
+    </div>
   </div>
 </div>
 
-<!-- Toast notification -->
+<!-- CONTACT MODAL -->
+<div id="contact-modal" class="modal-overlay" onclick="if(event.target===this)closeContact()">
+  <div class="modal-box" style="max-width:480px">
+    <div class="bg-gradient-to-r from-[#002147] to-[#005bb7] p-6 rounded-t-[24px] flex justify-between items-start">
+      <div><p class="text-[#00ccf9] text-xs font-bold tracking-widest uppercase mb-1">Get in Touch</p><h2 class="text-white text-xl font-extrabold">Contact Us</h2></div>
+      <button onclick="closeContact()" class="text-white/60 hover:text-white p-1"><span class="material-symbols-outlined text-[22px]">close</span></button>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <a href="https://maps.google.com/?q=4533+Saint+Barnabas+Rd,+Temple+Hills,+MD+20748" target="_blank" class="flex flex-col items-center gap-2 bg-blue-50 hover:bg-blue-100 rounded-xl p-4 text-center transition-colors">
+          <span class="material-symbols-outlined text-[#00448c] text-2xl">location_on</span><span class="text-xs font-bold text-[#00448c]">Get Directions</span>
+        </a>
+        <div class="flex flex-col items-center gap-2 bg-blue-50 rounded-xl p-4 text-center">
+          <span class="material-symbols-outlined text-[#00448c] text-2xl">schedule</span><span class="text-xs font-bold text-[#00448c] leading-relaxed">Mon–Sat 9AM–5PM<br>Sunday Closed</span>
+        </div>
+      </div>
+      <div id="contact-form-wrap">
+        <form onsubmit="submitContact(event)" class="space-y-4">
+          <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Full Name <span class="text-red-500">*</span></label><input type="text" name="name" placeholder="John Smith" class="fi" required/></div>
+          <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Email <span class="text-red-500">*</span></label><input type="email" name="email" placeholder="you@email.com" class="fi" required/></div>
+          <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Phone</label><input type="tel" name="phone" placeholder="(301) 555-0000" class="fi"/></div>
+          <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Message <span class="text-red-500">*</span></label><textarea name="message" rows="4" placeholder="How can we help you?" class="fi resize-none" required></textarea></div>
+          <button type="submit" id="contact-btn" class="w-full bg-[#00448c] text-white py-3.5 rounded-xl font-bold hover:bg-[#005bb7] transition-colors flex items-center justify-center gap-2"><span class="material-symbols-outlined text-[18px]">send</span>Send Message</button>
+        </form>
+      </div>
+      <div id="contact-success" class="hidden text-center py-6">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3"><span class="material-symbols-outlined text-[40px] text-green-600">check_circle</span></div>
+        <h3 class="font-bold text-[#00448c] text-lg mb-1">Message Sent!</h3>
+        <p class="text-slate-500 text-sm">We'll get back to you as soon as possible.</p>
+        <button onclick="closeContact()" class="mt-4 px-6 py-2.5 bg-[#00448c] text-white rounded-xl font-bold text-sm hover:bg-[#005bb7] transition-colors">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
-  // ── Modal helpers ──────────────────────────────────────
-  function openContact() {
-    document.getElementById('contact-modal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeContact() {
-    document.getElementById('contact-modal').classList.remove('open');
-    document.body.style.overflow = '';
-  }
+// ════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyruUv6mbruZNHRneTTtt8ZJDhBZ-pn0Od2c5x7-Xa-dzCGg2l5oDRK8oAHd4jO5upbQA/exec';
 
-  function openBooking(packageName, price) {
-    document.getElementById('booking-title').textContent = packageName;
-    document.getElementById('booking-price').textContent = price;
-    // Pre-set min date to tomorrow
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    document.getElementById('booking-date').min = tomorrow.toISOString().split('T')[0];
-    document.getElementById('booking-modal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeBooking() {
-    document.getElementById('booking-modal').classList.remove('open');
-    document.body.style.overflow = '';
-  }
+// ── Hourly time slots: 9 AM → 4 PM ──────
+// Labels used consistently everywhere
+const ALL_SLOTS = [
+  '9:00 AM','10:00 AM','11:00 AM','12:00 PM',
+  '1:00 PM','2:00 PM','3:00 PM','4:00 PM'
+];
 
-  // Close modals on backdrop click
-  document.getElementById('contact-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeContact();
+// ════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════
+let bk = { service:'', price:'', date:'', time:'', name:'', email:'', phone:'', vehicle:'', reminder:true };
+let currentStep = 1;
+let bookedSlots = []; // filled from Apps Script doGet
+
+// ════════════════════════════════════════
+//  OPEN / CLOSE
+// ════════════════════════════════════════
+function openBooking(service, price) {
+  if (service) {
+    document.querySelectorAll('input[name="svc"]').forEach(r => { r.checked = (r.value === service); });
+    bk.service = service; bk.price = price;
+  }
+  document.getElementById('booking-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  goStep(service ? 2 : 1);
+  if (service) { buildSlots([]); }
+}
+function closeBooking() {
+  document.getElementById('booking-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(resetBooking, 300);
+}
+function resetBooking() {
+  bk = { service:'', price:'', date:'', time:'', name:'', email:'', phone:'', vehicle:'', reminder:true };
+  bookedSlots = [];
+  document.querySelectorAll('input[name="svc"]').forEach(r => r.checked = false);
+  const d = document.getElementById('bk-date'); if(d) d.value = '';
+  document.getElementById('slots-wrap').classList.add('hidden');
+  ['bk-name','bk-email','bk-phone','bk-vehicle'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  const rb = document.getElementById('bk-reminder'); if(rb) rb.checked = true;
+  goStep(1);
+}
+function openContact() {
+  document.getElementById('contact-form-wrap').classList.remove('hidden');
+  document.getElementById('contact-success').classList.add('hidden');
+  document.getElementById('contact-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeContact() {
+  document.getElementById('contact-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ════════════════════════════════════════
+//  STEP NAVIGATION
+// ════════════════════════════════════════
+function goStep(n) {
+  [1,2,3,4,5].forEach(i => {
+    const el = document.getElementById('step'+i);
+    if(el) el.classList.add('hidden');
   });
-  document.getElementById('booking-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeBooking();
-  });
-
-  // ── Toast ──────────────────────────────────────────────
-  function showToast(message) {
-    const t = document.getElementById('toast');
-    t.textContent = message;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
-  }
-
-  // ── Mobile menu ────────────────────────────────────────
-  function toggleMobileMenu() {
-    document.getElementById('mobile-menu').classList.toggle('hidden');
-  }
-  function closeMobileMenu() {
-    document.getElementById('mobile-menu').classList.add('hidden');
-  }
-
-  // ── Resend Config ──────────────────────────────────────
-  // ── Google Apps Script Web App URL ────────────────────
-  // بعد ما تنشر الـ Script، حط الـ URL هنا 👇
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyruUv6mbruZNHRneTTtt8ZJDhBZ-pn0Od2c5x7-Xa-dzCGg2l5oDRK8oAHd4jO5upbQA/exec';
-
-  const RESEND_API_KEY = 're_Cqyut2hv_7jqN78wXmdFQg8Nb1rWJagxk';
-  const FROM_EMAIL     = 'noreply@appointments.modycarwash.com';
-  const OWNER_EMAIL    = 'ahmed.irq2026@gmail.com';      // ← ايميلك لاستلام الحجوزات
-
-  async function sendEmail(to, subject, html) {
-    // Resend doesn't support direct browser calls (CORS),
-    // so we route through a lightweight CORS proxy.
-    const RESEND_URL = 'https://api.resend.com/emails';
-    const PROXY      = 'https://corsproxy.io/?' + encodeURIComponent(RESEND_URL);
-
-    const res = await fetch(PROXY, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-        'x-requested-with': 'XMLHttpRequest'
-      },
-      body: JSON.stringify({ from: FROM_EMAIL, to, subject, html })
-    });
-
-    let data;
-    try { data = await res.json(); } catch(_) { data = {}; }
-
-    if (!res.ok) {
-      console.error('[Resend Error]', data);
-      throw new Error(data.message || `HTTP ${res.status}`);
-    }
-    return data;
-  }
-
-  // ── Email Templates ────────────────────────────────────
-  function bookingConfirmationHTML(b) {
-    const dateFormatted = new Date(b.date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    return `
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<style>
-  body{margin:0;padding:0;background:#f0f6ff;font-family:'Segoe UI',Helvetica,Arial,sans-serif;}
-  .wrap{max-width:580px;margin:32px auto;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,68,140,0.12);}
-  .header{background:linear-gradient(135deg,#002147 0%,#005bb7 100%);padding:40px 40px 32px;text-align:center;}
-  .logo{display:inline-flex;align-items:center;gap:10px;margin-bottom:20px;}
-  .logo-icon{width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
-  .logo-text{font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
-  .badge{background:rgba(0,204,249,0.2);border:1px solid rgba(0,204,249,0.4);color:#7de3ff;font-size:11px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:999px;text-transform:uppercase;display:inline-block;margin-bottom:16px;}
-  .header h1{color:#ffffff;font-size:26px;font-weight:800;margin:0;letter-spacing:-0.5px;}
-  .header p{color:rgba(255,255,255,0.7);font-size:14px;margin:8px 0 0;}
-  .body{padding:36px 40px;}
-  .greeting{font-size:18px;font-weight:700;color:#002147;margin-bottom:6px;}
-  .subtext{font-size:14px;color:#64748b;margin-bottom:28px;line-height:1.6;}
-  .card{background:#f8faff;border:1.5px solid #e0eaff;border-radius:14px;overflow:hidden;margin-bottom:24px;}
-  .card-header{background:#00448c;padding:12px 20px;display:flex;align-items:center;gap:8px;}
-  .card-header span{color:#ffffff;font-size:13px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
-  .card-body{padding:20px;}
-  .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e8f0fe;}
-  .row:last-child{border-bottom:none;}
-  .row-label{font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;}
-  .row-value{font-size:15px;font-weight:700;color:#002147;text-align:right;}
-  .price-row{background:#eff6ff;border-radius:10px;padding:14px 16px;margin-top:4px;display:flex;justify-content:space-between;align-items:center;}
-  .price-label{font-size:13px;font-weight:700;color:#3b82f6;}
-  .price-value{font-size:24px;font-weight:900;color:#00448c;}
-  .info-box{background:#fefce8;border:1.5px solid #fde68a;border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;gap:12px;align-items:flex-start;}
-  .info-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
-  .info-text{font-size:13px;color:#78350f;line-height:1.6;}
-  .location-card{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:16px 20px;margin-bottom:24px;}
-  .location-title{font-size:12px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
-  .location-text{font-size:14px;color:#166534;font-weight:600;line-height:1.6;}
-  .btn{display:block;background:linear-gradient(135deg,#00448c,#005bb7);color:#ffffff;text-decoration:none;text-align:center;padding:15px 24px;border-radius:12px;font-size:15px;font-weight:700;margin-bottom:12px;letter-spacing:0.2px;}
-  .footer{background:#f8faff;padding:24px 40px;text-align:center;border-top:1px solid #e8f0fe;}
-  .footer p{font-size:12px;color:#94a3b8;margin:4px 0;line-height:1.6;}
-  .footer strong{color:#64748b;}
-</style></head>
-<body>
-<div class="wrap">
-  <div class="header">
-    <div class="logo">
-      <div class="logo-icon">💧</div>
-      <div class="logo-text">Mody Car Wash</div>
-    </div>
-    <div class="badge">✅ Booking Confirmed</div>
-    <h1>Your appointment is booked!</h1>
-    <p>We can't wait to make your car shine ✨</p>
-  </div>
-
-  <div class="body">
-    <p class="greeting">Hi ${b.name.split(' ')[0]}! 👋</p>
-    <p class="subtext">Your booking has been confirmed. Please find the details below. We'll see you soon!</p>
-
-    <div class="card">
-      <div class="card-header"><span>📋 Appointment Details</span></div>
-      <div class="card-body">
-        <div class="row">
-          <span class="row-label">Service</span>
-          <span class="row-value">${b.service}</span>
-        </div>
-        <div class="row">
-          <span class="row-label">Date</span>
-          <span class="row-value">📅 ${dateFormatted}</span>
-        </div>
-        <div class="row">
-          <span class="row-label">Time</span>
-          <span class="row-value">🕐 ${b.time}</span>
-        </div>
-        ${b.vehicle ? `<div class="row"><span class="row-label">Vehicle</span><span class="row-value">🚗 ${b.vehicle}</span></div>` : ''}
-        <div class="price-row">
-          <span class="price-label">💳 Total Amount</span>
-          <span class="price-value">${b.price}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="info-box">
-      <span class="info-icon">💡</span>
-      <span class="info-text"><strong>Pay on arrival</strong> — No payment required now. Cash and cards accepted at the location. Last appointments accepted 30 minutes before closing time (5:00 PM).</span>
-    </div>
-
-    <div class="location-card">
-      <div class="location-title">📍 Our Location</div>
-      <div class="location-text">
-        4533 Saint Barnabas Road<br/>
-        Temple Hills, Maryland 20748<br/>
-        Mon–Sat: 9:00 AM – 5:00 PM &nbsp;|&nbsp; Sunday: Closed
-      </div>
-    </div>
-
-    <a href="https://maps.google.com/?q=4533+Saint+Barnabas+Road+Temple+Hills+MD+20748" class="btn">
-      🗺️ Get Directions
-    </a>
-  </div>
-
-  <div class="footer">
-    <p><strong>Need to reschedule?</strong></p>
-    <p>Call us or send us a message — we're happy to help.</p>
-    <p style="margin-top:12px;">© 2024 Mody Car Wash · Temple Hills, Maryland</p>
-    <p><em>Meticulous clarity in every shine.</em></p>
-  </div>
-</div>
-</body></html>`;
-  }
-
-  function ownerNotificationHTML(b) {
-    const dateFormatted = new Date(b.date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    return `
-<!DOCTYPE html><html><head><meta charset="UTF-8"/>
-<style>
-  body{margin:0;padding:0;background:#f0f6ff;font-family:'Segoe UI',Helvetica,Arial,sans-serif;}
-  .wrap{max-width:520px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,68,140,0.1);}
-  .header{background:#002147;padding:24px 32px;}
-  .header h2{color:#fff;margin:0;font-size:20px;font-weight:800;}
-  .header p{color:rgba(255,255,255,0.6);margin:4px 0 0;font-size:13px;}
-  .body{padding:28px 32px;}
-  .row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9;}
-  .row:last-child{border-bottom:none;}
-  .lbl{font-size:12px;color:#94a3b8;font-weight:700;text-transform:uppercase;}
-  .val{font-size:14px;color:#1e293b;font-weight:700;text-align:right;}
-  .price{font-size:22px;font-weight:900;color:#00448c;text-align:center;margin:16px 0;}
-</style></head>
-<body>
-<div class="wrap">
-  <div class="header">
-    <h2>🔔 New Booking Received</h2>
-    <p>Mody Car Wash — ${new Date().toLocaleString('en-US', {timeZone:'America/New_York'})}</p>
-  </div>
-  <div class="body">
-    <div class="row"><span class="lbl">Customer</span><span class="val">${b.name}</span></div>
-    <div class="row"><span class="lbl">Email</span><span class="val">${b.email}</span></div>
-    <div class="row"><span class="lbl">Phone</span><span class="val">${b.phone}</span></div>
-    <div class="row"><span class="lbl">Service</span><span class="val">${b.service}</span></div>
-    <div class="row"><span class="lbl">Date</span><span class="val">${dateFormatted}</span></div>
-    <div class="row"><span class="lbl">Time</span><span class="val">${b.time}</span></div>
-    ${b.vehicle ? `<div class="row"><span class="lbl">Vehicle</span><span class="val">${b.vehicle}</span></div>` : ''}
-    <div class="row"><span class="lbl">Reminder Opt-in</span><span class="val">${b.reminderOptIn ? '✅ Yes' : '❌ No'}</span></div>
-    <div class="price">${b.price}</div>
-  </div>
-</div>
-</body></html>`;
-  }
-
-  function contactNotificationHTML(d) {
-    return `
-<!DOCTYPE html><html><head><meta charset="UTF-8"/>
-<style>
-  body{margin:0;padding:0;background:#f0f6ff;font-family:'Segoe UI',Helvetica,Arial,sans-serif;}
-  .wrap{max-width:520px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,68,140,0.1);}
-  .header{background:#00448c;padding:24px 32px;}
-  .header h2{color:#fff;margin:0;font-size:20px;font-weight:800;}
-  .body{padding:28px 32px;}
-  .row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9;}
-  .row:last-child{border-bottom:none;}
-  .lbl{font-size:12px;color:#94a3b8;font-weight:700;text-transform:uppercase;}
-  .val{font-size:14px;color:#1e293b;font-weight:700;text-align:right;max-width:70%;}
-  .msg{background:#f8faff;border-radius:10px;padding:16px;margin-top:16px;font-size:14px;color:#334155;line-height:1.7;border:1px solid #e0eaff;}
-</style></head>
-<body>
-<div class="wrap">
-  <div class="header"><h2>✉️ New Contact Message</h2></div>
-  <div class="body">
-    <div class="row"><span class="lbl">Name</span><span class="val">${d.name}</span></div>
-    <div class="row"><span class="lbl">Email</span><span class="val">${d.email}</span></div>
-    <div class="row"><span class="lbl">Phone</span><span class="val">${d.phone || '—'}</span></div>
-    <div class="msg"><strong>Message:</strong><br/>${d.message}</div>
-  </div>
-</div>
-</body></html>`;
-  }
-
-  // ── Contact form submit ────────────────────────────────
-  async function submitContact(e) {
-    e.preventDefault();
-    const form = e.target;
-    const btn = form.querySelector('button[type=submit]');
-    btn.textContent = 'Sending...'; btn.disabled = true;
-
-    const data = {
-      name: form.name.value,
-      email: form.email.value,
-      phone: form.phone.value,
-      message: form.message.value
-    };
-
-    try {
-      await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode:   'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'contact', ...data })
-      });
-      closeContact();
-      form.reset();
-      showToast('✅ Message sent! We\'ll get back to you soon.');
-    } catch(err) {
-      showToast('⚠️ Error sending message. Please call us directly.');
-      console.error(err);
-    } finally {
-      btn.textContent = 'Send Message'; btn.disabled = false;
-    }
-  }
-
-  // ── Booking form submit ────────────────────────────────
-  async function submitBooking(e) {
-    e.preventDefault();
-    const form = e.target;
-    const btn = form.querySelector('button[type=submit]');
-    btn.textContent = 'Confirming...'; btn.disabled = true;
-
-    const booking = {
-      service:      document.getElementById('booking-title').textContent,
-      price:        document.getElementById('booking-price').textContent,
-      name:         form.name.value,
-      email:        form.email.value,
-      phone:        form.phone.value,
-      date:         form.date.value,
-      time:         form.time.value,
-      vehicle:      form.vehicle.value,
-      reminderOptIn: form.reminder.checked
-    };
-
-    try {
-      // ── Google Apps Script → Sheets + Gmail ──────────────
-      const res = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode:   'no-cors',          // Apps Script doesn't need CORS preflight
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'booking', ...booking })
-      });
-      // no-cors returns opaque response — treat as success if no exception
-      closeBooking();
-      form.reset();
-      showToast('🚗 Booking confirmed! Check your email.');
-    } catch(err) {
-      showToast('⚠️ Error saving booking. Please call us.');
-      console.error(err);
-    } finally {
-      btn.textContent = 'Confirm Booking'; btn.disabled = false;
-    }
-  }
-
-  // ── Business hours status display ─────────────────────
-  function updateHoursStatus() {
-    const now = new Date();
-    // Adjust to Eastern Time
-    const etOptions = { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', hour12: false, weekday: 'long' };
-    const etParts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', hour12: false, weekday: 'long' }).formatToParts(now);
-    const weekday = etParts.find(p => p.type === 'weekday').value;
-    const hour = parseInt(etParts.find(p => p.type === 'hour').value);
-    const minute = parseInt(etParts.find(p => p.type === 'minute').value);
-    const totalMinutes = hour * 60 + minute;
-    const openTime = 9 * 60;   // 9:00 AM
-    const closeTime = 17 * 60; // 5:00 PM
-
-    const statusEl = document.getElementById('current-status');
-    const heroBadge = document.querySelector('.open-badge');
-
-    if (weekday === 'Sunday') {
-      statusEl.textContent = 'Closed today (Sunday) · Opens Monday at 9 AM';
-      if (heroBadge) { heroBadge.textContent = 'Closed Today'; heroBadge.className = 'closed-badge'; }
-    } else if (totalMinutes >= openTime && totalMinutes < closeTime) {
-      const closeHour = 5; const closeMin = '00';
-      statusEl.textContent = `Open now · Closes at 5:00 PM ET`;
-      if (heroBadge) { heroBadge.textContent = 'Open Now'; heroBadge.className = 'open-badge'; }
-    } else if (totalMinutes >= closeTime) {
-      statusEl.textContent = `Closed · Opens tomorrow at 9:00 AM ET`;
-      if (heroBadge) { heroBadge.textContent = 'Closed'; heroBadge.className = 'closed-badge'; }
+  const t = document.getElementById('step'+n);
+  if(t) t.classList.remove('hidden');
+  currentStep = n;
+  updateProgress(n);
+  const box = document.querySelector('.modal-box');
+  if(box) box.scrollTop = 0;
+}
+function updateProgress(n) {
+  [1,2,3,4].forEach(i => {
+    const c = document.getElementById('sc'+i);
+    const l = document.getElementById('sl'+i);
+    if(i < n) {
+      c.className = 'sc bg-[#00ccf9] text-[#001f28]';
+      c.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px">check</span>';
+    } else if(i === n) {
+      c.className = 'sc bg-white text-[#00448c]';
+      c.innerHTML = i;
     } else {
-      statusEl.textContent = `Opens today at 9:00 AM ET`;
-      if (heroBadge) { heroBadge.textContent = 'Opens at 9 AM'; heroBadge.className = 'hours-badge bg-amber-100 text-amber-800'; }
+      c.className = 'sc bg-white/20 text-white';
+      c.innerHTML = i;
     }
-  }
-
-  updateHoursStatus();
-  setInterval(updateHoursStatus, 60000); // refresh every minute
-
-  // Highlight active nav on scroll
-  const sections = ['home','philosophy','services','location'];
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el && window.scrollY >= el.offsetTop - 100) current = id;
-    });
+    if(l) l.style.background = i < n ? '#00ccf9' : 'rgba(255,255,255,0.25)';
   });
+}
+
+// ════════════════════════════════════════
+//  STEP 1 → 2
+// ════════════════════════════════════════
+function step1Next() {
+  const sel = document.querySelector('input[name="svc"]:checked');
+  if(!sel) { document.getElementById('svc-err').classList.remove('hidden'); return; }
+  document.getElementById('svc-err').classList.add('hidden');
+  bk.service = sel.value; bk.price = sel.dataset.price;
+  goStep(2);
+}
+
+// ════════════════════════════════════════
+//  DATE CHANGE → fetch booked slots
+// ════════════════════════════════════════
+async function onDateChange(input) {
+  const errEl = document.getElementById('date-err');
+  const wrapEl = document.getElementById('slots-wrap');
+  if(!input.value) { wrapEl.classList.add('hidden'); return; }
+
+  const day = new Date(input.value + 'T00:00:00').getDay(); // 0=Sun
+  if(day === 0) {
+    errEl.textContent = "We're closed on Sundays. Please pick another day.";
+    errEl.classList.remove('hidden');
+    input.value = ''; bk.date = '';
+    wrapEl.classList.add('hidden');
+    return;
+  }
+  errEl.classList.add('hidden');
+  bk.date = input.value;
+  bk.time = '';
+
+  // show slots area + loading
+  wrapEl.classList.remove('hidden');
+  document.getElementById('slots-loader').classList.remove('hidden');
+  buildSlots([]); // show all as available while loading
+
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=slots&date=${input.value}`);
+    const data = await res.json();
+    bookedSlots = data.booked || [];
+  } catch(e) {
+    bookedSlots = []; // on error, show all slots
+  }
+  document.getElementById('slots-loader').classList.add('hidden');
+  buildSlots(bookedSlots);
+}
+
+// ════════════════════════════════════════
+//  BUILD SLOT BUTTONS
+// ════════════════════════════════════════
+function buildSlots(booked) {
+  const container = document.getElementById('time-slots');
+  container.innerHTML = '';
+  ALL_SLOTS.forEach(label => {
+    const isBooked = booked.includes(label);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.disabled = isBooked;
+    btn.className = isBooked ? 'sb bkd' : 'sb';
+    btn.innerHTML = isBooked
+      ? `<span style="font-size:10px;display:block">${label}</span><span style="font-size:9px;color:#cbd5e1">Booked</span>`
+      : label;
+    if(!isBooked) {
+      btn.onclick = () => {
+        document.querySelectorAll('#time-slots .sb').forEach(b => {
+          if(!b.disabled) b.className = 'sb';
+        });
+        btn.className = 'sb sel';
+        bk.time = label;
+        document.getElementById('time-err').classList.add('hidden');
+      };
+    }
+    container.appendChild(btn);
+  });
+  // Re-select if previously chosen
+  if(bk.time) {
+    document.querySelectorAll('#time-slots .sb').forEach(b => {
+      if(!b.disabled && b.textContent.trim() === bk.time) b.className = 'sb sel';
+    });
+  }
+}
+
+// ════════════════════════════════════════
+//  STEP 2 → 3
+// ════════════════════════════════════════
+function step2Next() {
+  if(!bk.date) {
+    document.getElementById('date-err').textContent = 'Please pick a date.';
+    document.getElementById('date-err').classList.remove('hidden');
+    return;
+  }
+  if(!bk.time) { document.getElementById('time-err').classList.remove('hidden'); return; }
+  goStep(3);
+}
+
+// ════════════════════════════════════════
+//  STEP 3 → 4
+// ════════════════════════════════════════
+function step3Next() {
+  const name  = document.getElementById('bk-name').value.trim();
+  const email = document.getElementById('bk-email').value.trim();
+  const phone = document.getElementById('bk-phone').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!name || !emailOk || !phone) {
+    document.getElementById('info-err').classList.remove('hidden'); return;
+  }
+  document.getElementById('info-err').classList.add('hidden');
+  bk.name = name; bk.email = email; bk.phone = phone;
+  bk.vehicle  = document.getElementById('bk-vehicle').value.trim();
+  bk.reminder = document.getElementById('bk-reminder').checked;
+  populateSummary();
+  goStep(4);
+}
+
+// ════════════════════════════════════════
+//  SUMMARY
+// ════════════════════════════════════════
+function populateSummary() {
+  const d = new Date(bk.date + 'T00:00:00');
+  const dStr = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+  const arriveTime = getArriveBy(bk.time);
+
+  document.getElementById('sum-service').textContent = bk.service;
+  document.getElementById('sum-date').textContent    = dStr;
+  document.getElementById('sum-time').textContent    = bk.time;
+  document.getElementById('sum-arrive').textContent  = 'Arrive by ' + arriveTime;
+  document.getElementById('sum-name').textContent    = bk.name;
+  document.getElementById('sum-email').textContent   = bk.email;
+  document.getElementById('sum-phone').textContent   = bk.phone;
+  document.getElementById('sum-price').textContent   = bk.price;
+
+  const vr = document.getElementById('sum-vehicle-row');
+  if(bk.vehicle) {
+    document.getElementById('sum-vehicle').textContent = bk.vehicle;
+    vr.classList.remove('hidden');
+  } else { vr.classList.add('hidden'); }
+}
+
+// ════════════════════════════════════════
+//  ARRIVE 15 MIN EARLY HELPER
+// ════════════════════════════════════════
+function getArriveBy(timeStr) {
+  // e.g. "9:00 AM" → "8:45 AM"
+  const map = {
+    '9:00 AM':'8:45 AM','10:00 AM':'9:45 AM','11:00 AM':'10:45 AM',
+    '12:00 PM':'11:45 AM','1:00 PM':'12:45 PM','2:00 PM':'1:45 PM',
+    '3:00 PM':'2:45 PM','4:00 PM':'3:45 PM'
+  };
+  return map[timeStr] || timeStr;
+}
+
+// ════════════════════════════════════════
+//  SUBMIT → Google Apps Script
+// ════════════════════════════════════════
+async function submitBooking() {
+  const btn = document.getElementById('confirm-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined text-[18px] spin">progress_activity</span> Confirming...';
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action:'booking',
+        service: bk.service, price: bk.price,
+        name: bk.name, email: bk.email, phone: bk.phone,
+        date: bk.date, time: bk.time,
+        vehicle: bk.vehicle || '',
+        reminderOptIn: bk.reminder,
+        timestamp: new Date().toISOString(),
+        source: 'mody-carwash-website',
+        location: '4533 Saint Barnabas Rd, Temple Hills, MD 20748'
+      })
+    });
+
+    const d = new Date(bk.date + 'T00:00:00');
+    const dStr = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+    document.getElementById('success-detail').textContent = bk.service + ' — ' + dStr + ' at ' + bk.time;
+    document.getElementById('success-arrive').textContent = 'Please arrive by ' + getArriveBy(bk.time);
+    goStep(5);
+
+  } catch(err) {
+    showToast('Connection error. Please try again or call us.', true);
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">event_available</span> Confirm Booking';
+  }
+}
+
+// ════════════════════════════════════════
+//  CONTACT SUBMIT
+// ════════════════════════════════════════
+async function submitContact(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn  = document.getElementById('contact-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined text-[18px] spin">progress_activity</span> Sending...';
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action:'contact',
+        name: form.name.value, email: form.email.value,
+        phone: form.phone.value || '', message: form.message.value,
+        timestamp: new Date().toISOString(), source:'mody-carwash-website'
+      })
+    });
+    document.getElementById('contact-form-wrap').classList.add('hidden');
+    document.getElementById('contact-success').classList.remove('hidden');
+    form.reset();
+  } catch(err) {
+    showToast('Error sending message. Please try again.', true);
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">send</span> Send Message';
+  }
+}
+
+// ════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = isError ? 'err show' : 'show';
+  setTimeout(() => { t.className = ''; }, 3800);
+}
+
+// ════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const di = document.getElementById('bk-date');
+  if(di) {
+    const tm = new Date(); tm.setDate(tm.getDate() + 1);
+    di.min = tm.toISOString().split('T')[0];
+  }
+});
 </script>
 </body>
 </html>
