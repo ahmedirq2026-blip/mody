@@ -784,25 +784,46 @@ async function submitBooking() {
   btn.innerHTML = '<span class="material-symbols-outlined text-[17px] spin">progress_activity</span> Confirming...';
 
   try {
-    await fetch(APPS_SCRIPT_URL, {
-      method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        action:'booking',
-        service: bk.service, price: bk.price,
-        name: bk.name, email: bk.email, phone: bk.phone,
-        date: bk.date, time: bk.time,
-        vehicle: bk.vehicle || '',
-        reminderOptIn: bk.reminder,
-        timestamp: new Date().toISOString(),
-        source: 'mody-carwash-website'
-      })
+    // Build GET URL — no CORS preflight, server response fully readable
+    const params = new URLSearchParams({
+      action:   'book',
+      name:     bk.name,
+      email:    bk.email,
+      phone:    bk.phone,
+      service:  bk.service,
+      price:    bk.price,
+      date:     bk.date,
+      time:     bk.time,
+      vehicle:  bk.vehicle || '',
+      reminder: bk.reminder ? 'true' : 'false'
     });
-    const d = new Date(bk.date + 'T00:00:00');
-    const dStr = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+
+    const res    = await fetch(APPS_SCRIPT_URL + '?' + params.toString(), { redirect: 'follow' });
+    const result = await res.json();
+
+    if (result.status === 'conflict') {
+      // Slot was taken by someone else — show error, go back to step 2
+      document.getElementById('conflict-banner').classList.remove('hidden');
+      document.getElementById('recheck-banner').classList.add('hidden');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined text-[17px]">event_available</span> Confirm Booking';
+      // Refresh slots
+      bk.time = '';
+      try {
+        const r2 = await fetch(APPS_SCRIPT_URL + '?action=slots&date=' + bk.date, { redirect: 'follow' });
+        const d2 = await r2.json();
+        bookedSlots = Array.isArray(d2.booked) ? d2.booked : [];
+      } catch(e) { bookedSlots = []; }
+      return;
+    }
+
+    // Success
+    const d    = new Date(bk.date + 'T00:00:00');
+    const dStr = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
     document.getElementById('success-detail').textContent = bk.service + ' — ' + dStr + ' at ' + bk.time;
     document.getElementById('success-arrive').textContent = 'Please arrive by ' + (ARRIVE_MAP[bk.time] || bk.time);
     goStep(5);
+
   } catch(err) {
     showToast('Connection error. Please try again or call 240-960-8365', true);
     btn.disabled = false;
@@ -820,16 +841,14 @@ async function submitContact(e) {
   btn.disabled = true;
   btn.innerHTML = '<span class="material-symbols-outlined text-[17px] spin">progress_activity</span> Sending...';
   try {
-    await fetch(APPS_SCRIPT_URL, {
-      method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        action:'contact',
-        name: form.name.value, email: form.email.value,
-        phone: form.phone.value || '', message: form.message.value,
-        timestamp: new Date().toISOString()
-      })
+    const params = new URLSearchParams({
+      action:  'contact',
+      name:    form.name.value,
+      email:   form.email.value,
+      phone:   form.phone.value || '',
+      message: form.message.value
     });
+    await fetch(APPS_SCRIPT_URL + '?' + params.toString(), { redirect: 'follow' });
     document.getElementById('contact-form-wrap').classList.add('hidden');
     document.getElementById('contact-success').classList.remove('hidden');
     form.reset();
