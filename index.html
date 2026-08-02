@@ -114,7 +114,7 @@ tailwind.config={darkMode:"class",theme:{extend:{
   "makesOffer": [
     {"@type":"Offer","itemOffered":{"@type":"Service","name":"Mody Exterior — Hand Car Wash","description":"High-pressure water wash, paint-safe cleaners, scratch-free manual hand drying, glass polishing and tire rim cleaning."},"price":"29.99","priceCurrency":"USD"},
     {"@type":"Offer","itemOffered":{"@type":"Service","name":"Mody Interior — Interior Detailing","description":"Deep vacuuming of cabin and trunk, dashboard polishing, dust removal and floor carpet washing."},"price":"29.99","priceCurrency":"USD"},
-    {"@type":"Offer","itemOffered":{"@type":"Service","name":"Window Tint Removal","description":"Scratch-free window tint removal with precise tools, full adhesive residue cleaning and factory-condition glass restoration."},"price":"29.99","priceCurrency":"USD"},
+    {"@type":"Offer","itemOffered":{"@type":"Service","name":"Window Tint Removal","description":"Scratch-free window tint removal with precise tools, full adhesive residue cleaning and factory-condition glass restoration."}},
     {"@type":"Offer","itemOffered":{"@type":"Service","name":"Mody Combo — Interior & Exterior Detailing","description":"Full exterior hand wash plus full interior detailing, with rim detailing and tire shine add-ons."},"price":"49.99","priceCurrency":"USD"},
     {"@type":"Offer","itemOffered":{"@type":"Service","name":"Super Mody — Full Premium Detail","description":"Complete detail including engine bay cleaning, steam cleaning, stain and odor removal, hydrophobic glass, upholstery perfuming and tire blackening."},"price":"99.99","priceCurrency":"USD"}
   ]
@@ -135,7 +135,7 @@ tailwind.config={darkMode:"class",theme:{extend:{
   "mainEntity": [
     {"@type":"Question","name":"Where is Mody Car Wash located?","acceptedAnswer":{"@type":"Answer","text":"Mody Car Wash is located at 4533 Saint Barnabas Rd, Temple Hills, MD 20748, serving Temple Hills, Camp Springs, Oxon Hill, Suitland and the wider Prince George's County area."}},
     {"@type":"Question","name":"Is Mody a hand car wash or an automatic machine wash?","acceptedAnswer":{"@type":"Answer","text":"Mody is a 100% hand car wash. We never use harsh automatic tunnels. Every vehicle is washed by hand with soft microfiber and grit-guard buckets to keep the paint scratch-free."}},
-    {"@type":"Question","name":"How much does a car wash at Mody cost?","acceptedAnswer":{"@type":"Answer","text":"Exterior wash, interior detailing and window tint removal each start at $29.99. The Mody Combo (interior + exterior) is $49.99 and the full premium Super Mody detail is $99.99."}},
+    {"@type":"Question","name":"How much does a car wash at Mody cost?","acceptedAnswer":{"@type":"Answer","text":"Exterior wash and interior detailing each start at $29.99. The Mody Combo (interior + exterior) is $49.99 and the full premium Super Mody detail is $99.99."}},
     {"@type":"Question","name":"Do I need to pay when I book online?","acceptedAnswer":{"@type":"Answer","text":"No payment is required at booking. Cash is accepted on arrival. Please arrive 15 minutes before your appointment."}},
     {"@type":"Question","name":"What are your opening hours?","acceptedAnswer":{"@type":"Answer","text":"Mody Car Wash is open Monday to Saturday, 9:00 AM to 5:00 PM, and closed on Sundays. The last appointment is accepted 30 minutes before closing."}},
     {"@type":"Question","name":"Do you offer interior detailing and window tint removal?","acceptedAnswer":{"@type":"Answer","text":"Yes. We offer full interior detailing (deep vacuum, dashboard polish, floor mats and steam stain removal) and professional scratch-free window tint removal that restores glass to factory condition."}}
@@ -450,7 +450,7 @@ body{overflow-x:hidden}
         <div>
           <p class="text-white/50 font-bold text-xs tracking-widest mb-3">03</p>
           <span class="material-symbols-outlined text-3xl md:text-4xl text-white mb-3 md:mb-4 block">shield_with_house</span>
-          <div class="flex justify-between items-start mb-1"><h3 class="font-bold text-[20px] md:text-[22px] text-white leading-tight">Window Tint<br>Removal</h3><span class="text-xl md:text-2xl font-extrabold text-white">$29.99</span></div>
+          <div class="flex justify-between items-start mb-1"><h3 class="font-bold text-[20px] md:text-[22px] text-white leading-tight">Window Tint<br>Removal</h3></div>
           <p class="text-white/55 text-xs italic mb-4 md:mb-5">Specialized service for tint removal</p>
           <ul class="space-y-2 md:space-y-2.5 text-white/90 text-sm">
             <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Scratch-free removal using precise tools</li>
@@ -458,7 +458,7 @@ body{overflow-x:hidden}
             <li class="flex items-start gap-2"><span class="material-symbols-outlined text-sm text-white/60 mt-0.5 flex-shrink-0">check</span>Restoring glass to factory condition</li>
           </ul>
         </div>
-        <button onclick="openBooking('Window Tint Removal','$29.99')" class="rp mt-6 md:mt-8 py-3 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#4B0082] transition-all">Book Now</button>
+        <button onclick="openBooking('Window Tint Removal','')" class="rp mt-6 md:mt-8 py-3 w-full border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-[#4B0082] transition-all">Book Now</button>
       </div>
     </div>
 
@@ -589,7 +589,7 @@ body{overflow-x:hidden}
           <h3 class="font-bold text-[#00448c] text-[15px] md:text-[17px]">How much does a car wash at Mody cost?</h3>
           <span class="faq-ic material-symbols-outlined text-[#00ccf9] flex-shrink-0">add</span>
         </div>
-        <div class="faq-a"><p class="px-5 md:px-6 pb-5 md:pb-6 text-slate-600 text-sm md:text-base leading-relaxed">Exterior wash, interior detailing and window tint removal each start at $29.99. The Mody Combo (interior + exterior) is $49.99, and the full premium Super Mody detail is $99.99.</p></div>
+        <div class="faq-a"><p class="px-5 md:px-6 pb-5 md:pb-6 text-slate-600 text-sm md:text-base leading-relaxed">Exterior wash and interior detailing each start at $29.99. The Mody Combo (interior + exterior) is $49.99, and the full premium Super Mody detail is $99.99.</p></div>
       </div>
       <div class="faq-item glass rounded-2xl overflow-hidden reveal">
         <div class="faq-q flex items-center justify-between gap-4 p-5 md:p-6" onclick="toggleFaq(this)">
@@ -724,10 +724,9 @@ body{overflow-x:hidden}
             <span class="font-extrabold text-[#00448c] text-sm flex-shrink-0">$29.99</span>
           </label>
           <label class="flex items-center gap-3 border-2 border-slate-100 rounded-xl p-3 cursor-pointer hover:border-[#00448c] transition-all has-[:checked]:border-[#00448c] has-[:checked]:bg-blue-50">
-            <input type="radio" name="svc" value="Window Tint Removal" data-price="$29.99" class="accent-[#00448c] w-4 h-4 flex-shrink-0">
+            <input type="radio" name="svc" value="Window Tint Removal" data-price="" class="accent-[#00448c] w-4 h-4 flex-shrink-0">
             <div class="w-8 h-8 rounded-full bg-[#4B0082] flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white text-sm">shield_with_house</span></div>
             <div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-sm">Window Tint Removal</p><p class="text-xs text-slate-500 truncate">Scratch-free, residue-free, factory restore</p></div>
-            <span class="font-extrabold text-[#00448c] text-sm flex-shrink-0">$29.99</span>
           </label>
           <label class="flex items-center gap-3 border-2 border-slate-100 rounded-xl p-3 cursor-pointer hover:border-[#00448c] transition-all has-[:checked]:border-[#00448c] has-[:checked]:bg-blue-50">
             <input type="radio" name="svc" value="Mody Combo" data-price="$49.99" class="accent-[#00448c] w-4 h-4 flex-shrink-0">
