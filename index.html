@@ -1270,7 +1270,26 @@ window.addEventListener('DOMContentLoaded', () => {
     const tm = new Date(); tm.setDate(tm.getDate() + 1);
     di.min = tm.toISOString().split('T')[0];
   }
+  openBookingFromUrl();
 });
+
+// Deep link: /#book opens the booking modal straight away, and
+// /#book-mody-interior (or ?book=Mody%20Interior) preselects a service.
+// Used by Google Business Profile, social posts and the chat assistant.
+function openBookingFromUrl() {
+  var hash = (location.hash || '').toLowerCase();
+  var param = new URLSearchParams(location.search).get('book');
+  if (hash.indexOf('#book') !== 0 && !param) return;
+
+  var names = ['Mody Exterior','Mody Interior','Window Tint Removal','Mody Combo','Super Mody'];
+  var wanted = param || hash.replace('#book', '').replace(/^-/, '').replace(/-/g, ' ');
+  var match = names.filter(function (n) {
+    return wanted && n.toLowerCase() === wanted.trim().toLowerCase();
+  })[0];
+
+  setTimeout(function () { openBooking(match || undefined, ''); }, 250);
+}
+window.addEventListener('hashchange', openBookingFromUrl);
 </script>
 
 <!-- ════════════════════════════════════════
