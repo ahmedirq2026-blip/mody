@@ -1219,6 +1219,8 @@ async function submitBooking() {
     document.getElementById('success-detail').textContent = bk.service + ' — ' + dStr + ' at ' + bk.time;
     document.getElementById('success-arrive').textContent = 'Please arrive by ' + (ARRIVE_MAP[bk.time] || bk.time);
     goStep(5);
+    // Meta Pixel: report the confirmed booking so ads can optimize for it
+    if (window.fbq) fbq('track', 'Schedule', { content_name: bk.service });
 
   } catch(err) {
     showToast('Connection error. Please try again or call 240-960-8365', true);
